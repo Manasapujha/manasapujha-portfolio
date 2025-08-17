@@ -1,10 +1,16 @@
 import React, { useEffect, useState } from "react";
 
-// Single-file React portfolio page (no smart quotes, fully ASCII)
-// Fix: Removed curly apostrophes and markdown blocks that caused a syntax error.
-// Includes simple runtime "tests" via console.assert to validate critical data.
-
 export default function PortfolioApp() {
+  // ---------------- Theme & Helpers ----------------
+  const THEME = {
+    cardBg: "#fff",
+    cardBorder: "#e5e7eb",
+    textMuted: "#374151",
+    link: "#2563eb",
+    shadowSm: "0 1px 2px rgba(0,0,0,0.05)",
+  };
+  const borderStr = (color = THEME.cardBorder) => `1px solid ${color}`; // prevents quote typos
+
   // -------- Data --------
   const skills = [
     "Java",
@@ -59,14 +65,22 @@ export default function PortfolioApp() {
     { title: "What is Data Science?", logo: "/logos/coursera.png" },
   ];
 
-  // -------- Runtime sanity checks (lightweight "tests") --------
+  // -------- Runtime sanity checks (automated "tests") --------
   useEffect(() => {
-    console.assert(Array.isArray(skills) && skills.length >= 5, "Skills should contain at least 5 items");
-    console.assert(
+    const assert = (cond, msg) => { if (!cond) throw new Error(`[portfolio test] ${msg}`); };
+
+    // Data shape tests
+    assert(Array.isArray(skills) && skills.length >= 5, "skills should contain at least 5 items");
+    assert(projects.length >= 3, "projects should contain at least 3 entries");
+    assert(
       certifications.some((c) => c.title === "Prompt Engineering for ChatGPT"),
-      "Certifications must include 'Prompt Engineering for ChatGPT'"
+      "certifications must include 'Prompt Engineering for ChatGPT'"
     );
-    console.assert(projects.length >= 3, "Projects should contain at least 3 entries");
+
+    // Style helper tests (catch the Vercel error type)
+    const b = borderStr();
+    assert(/^1px solid #[0-9a-fA-F]{6}$/.test(b), `borderStr() invalid: ${b}`);
+    ["#e5e7eb", "#d1d5db"].forEach((c) => assert(borderStr(c) === `1px solid ${c}`, `borderStr(${c}) wrong`));
   }, []);
 
   // -------- UI Components --------
@@ -75,7 +89,7 @@ export default function PortfolioApp() {
       <div style={{ fontFamily: "ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial" }}>
         <Navbar />
         <main style={{ maxWidth: 900, margin: "0 auto", padding: "24px" }}>{children}</main>
-        <footer style={{ textAlign: "center", padding: "16px", borderTop: "1px solid #eee", color: "#555" }}>
+        <footer style={{ textAlign: "center", padding: "16px", borderTop: borderStr("#eeeeee"), color: "#555" }}>
           © 2025 Manasapujha G. R.
         </footer>
       </div>
@@ -135,5 +149,190 @@ export default function PortfolioApp() {
     );
   }
 
-  // Additional components remain unchanged...
+  function Skills() {
+    const card = {
+      background: THEME.cardBg,
+      border: borderStr(),
+      borderRadius: 12,
+      padding: 12,
+      textAlign: "center",
+      boxShadow: "0 1px 2px rgba(0,0,0,0.04)",
+      transition: "all 0.3s ease",
+    };
+
+    return (
+      <section id="skills" style={{ marginTop: 24 }}>
+        <SectionTitle>Skills</SectionTitle>
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(140px, 1fr))", gap: 12 }}>
+          {skills.map((s, i) => (
+            <div key={i} style={card} onMouseEnter={(e) => (e.currentTarget.style.transform = "scale(1.05)")} onMouseLeave={(e) => (e.currentTarget.style.transform = "scale(1)")}>{s}</div>
+          ))}
+        </div>
+      </section>
+    );
+  }
+
+  function Projects() {
+    const card = {
+      background: THEME.cardBg,
+      border: borderStr(),
+      borderRadius: 12,
+      padding: 16,
+      boxShadow: THEME.shadowSm,
+      transition: "all 0.3s ease",
+    };
+    const title = { fontWeight: 700, fontSize: 16, marginBottom: 8 };
+    const text = { color: THEME.textMuted, lineHeight: 1.5 };
+
+    return (
+      <section id="projects" style={{ marginTop: 32 }}>
+        <SectionTitle>Projects</SectionTitle>
+        <div style={{ display: "grid", gap: 16 }}>
+          {projects.map((p, i) => (
+            <div key={i} style={card} onMouseEnter={(e) => (e.currentTarget.style.transform = "scale(1.02)")} onMouseLeave={(e) => (e.currentTarget.style.transform = "scale(1)")}>
+              <div style={title}>{p.title}</div>
+              <p style={text}>{p.description}</p>
+            </div>
+          ))}
+        </div>
+      </section>
+    );
+  }
+
+  function Certifications() {
+    const card = {
+      display: "flex",
+      alignItems: "center",
+      gap: 12,
+      background: THEME.cardBg,
+      border: borderStr(),
+      borderRadius: 12,
+      padding: 12,
+      boxShadow: THEME.shadowSm,
+      transition: "all 0.3s ease",
+    };
+
+    const grid = {
+      display: "grid",
+      gridTemplateColumns: "repeat(auto-fill, minmax(260px, 1fr))",
+      gap: 16,
+    };
+
+    const logoStyle = { width: 40, height: 40, objectFit: "contain", borderRadius: 8, background: THEME.cardBg };
+
+    return (
+      <section id="certifications" style={{ marginTop: 32 }}>
+        <SectionTitle>Certifications</SectionTitle>
+        <div style={grid}>
+          {certifications.map((c, i) => (
+            <div key={i} style={card} onMouseEnter={(e) => (e.currentTarget.style.transform = "scale(1.03)")} onMouseLeave={(e) => (e.currentTarget.style.transform = "scale(1)")}>
+              {c.logo ? (
+                <img src={c.logo} alt={c.title} style={logoStyle} />
+              ) : (
+                <div style={{ ...logoStyle, display: "grid", placeItems: "center", background: "#f3f4f6" }}>🏅</div>
+              )}
+              <div>
+                {c.url ? (
+                  <a href={c.url} target="_blank" rel="noreferrer" style={{ color: THEME.link, fontWeight: 600, textDecoration: "none" }}>
+                    {c.title}
+                  </a>
+                ) : (
+                  <span style={{ fontWeight: 600 }}>{c.title}</span>
+                )}
+              </div>
+            </div>
+          ))}
+        </div>
+      </section>
+    );
+  }
+
+  function Contact() {
+    const [formData, setFormData] = useState({ name: "", email: "", message: "" });
+    const [status, setStatus] = useState("");
+
+    const card = {
+      background: THEME.cardBg,
+      border: borderStr(),
+      borderRadius: 12,
+      padding: 16,
+      boxShadow: THEME.shadowSm,
+    };
+
+    async function handleSubmit(e) {
+      e.preventDefault();
+      setStatus("Sending...");
+      try {
+        const res = await fetch("https://formspree.io/f/your-form-id", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(formData),
+        });
+        if (res.ok) {
+          setStatus("Message sent successfully!");
+          setFormData({ name: "", email: "", message: "" });
+        } else {
+          setStatus("Oops! Something went wrong.");
+        }
+      } catch (err) {
+        setStatus("Failed to send. Please try again later.");
+      }
+    }
+
+    return (
+      <section id="contact" style={{ marginTop: 32 }}>
+        <SectionTitle>Contact</SectionTitle>
+        <p style={{ color: THEME.textMuted, marginBottom: 12 }}>
+          Email: <a href="mailto:contact@manasapujha.dev" style={{ color: THEME.link, textDecoration: "none" }}>contact@manasapujha.dev</a> ·{" "}
+          <a href="https://www.linkedin.com/in/manasapujha" target="_blank" rel="noreferrer" style={{ color: THEME.link, textDecoration: "none" }}>LinkedIn</a>
+        </p>
+        <form onSubmit={handleSubmit} style={card}>
+          <div style={{ display: "grid", gap: 12 }}>
+            <input
+              type="text"
+              name="name"
+              placeholder="Your Name"
+              value={formData.name}
+              onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+              required
+              style={{ padding: 10, borderRadius: 8, border: borderStr("#d1d5db") }}
+            />
+            <input
+              type="email"
+              name="email"
+              placeholder="Your Email"
+              value={formData.email}
+              onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+              required
+              style={{ padding: 10, borderRadius: 8, border: borderStr("#d1d5db") }}
+            />
+            <textarea
+              name="message"
+              placeholder="Your Message"
+              value={formData.message}
+              onChange={(e) => setFormData({ ...formData, message: e.target.value })}
+              required
+              rows={5}
+              style={{ padding: 10, borderRadius: 8, border: borderStr("#d1d5db") }}
+            />
+            <button type="submit" style={{ background: THEME.link, color: "white", padding: "10px 14px", borderRadius: 10, border: 0, cursor: "pointer" }}>
+              Send Message
+            </button>
+            {status && <p style={{ color: "#6b7280", fontSize: 14 }}>{status}</p>}
+          </div>
+        </form>
+      </section>
+    );
+  }
+
+  // -------- Page --------
+  return (
+    <Layout>
+      <Hero />
+      <Skills />
+      <Projects />
+      <Certifications />
+      <Contact />
+    </Layout>
+  );
 }
