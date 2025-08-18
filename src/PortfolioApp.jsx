@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 
 /**
  * Colorful, professional UI/UX refresh with real resume download
+ * + Hero image (replaces the old blue rectangle)
  */
 export default function PortfolioApp() {
   // ---------------- THEME ----------------
@@ -127,11 +128,6 @@ export default function PortfolioApp() {
           display: "flex", alignItems: "center", justifyContent: "space-between"
         }}>
           <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
-            <div style={{
-              width: 34, height: 34, borderRadius: 10,
-              background: `linear-gradient(135deg, ${THEME.gradientA}, ${THEME.gradientB})`,
-              boxShadow: shadow,
-            }} />
             <strong style={{ fontSize: 16 }}>Manasapujha G. R.</strong>
           </div>
           <div style={{ display: "flex", gap: 8 }}>
@@ -168,9 +164,18 @@ export default function PortfolioApp() {
 
   // ---------------- SECTIONS ----------------
   function Hero() {
+    const imgStyle = {
+      width: 180,
+      height: 180,
+      borderRadius: "50%",
+      objectFit: "cover",
+      boxShadow: "0 10px 24px rgba(2,6,23,.18)",
+      border: border("#e2e8f0"),
+    };
+
     return (
       <div style={{ maxWidth: 1100, margin: "0 auto", padding: "60px 20px" }}>
-        <div style={{ display: "grid", gap: 16, alignItems: "center", gridTemplateColumns: "1.1fr .9fr" }}>
+        <div style={{ display: "grid", gap: 24, alignItems: "center", gridTemplateColumns: "1fr auto" }}>
           <div>
             <div style={{
               display: "inline-flex", gap: 8, alignItems: "center",
@@ -183,18 +188,10 @@ export default function PortfolioApp() {
               </span>
             </div>
             <h1 style={{ fontSize: 40, lineHeight: 1.15, margin: "16px 0 8px" }}>
-              Full-Stack Developer in{" "}
-              <span style={{
-                background: `linear-gradient(90deg, ${THEME.gradientA}, ${THEME.gradientB})`,
-                WebkitBackgroundClip: "text",
-                color: "transparent"
-              }}>
-                Healthcare & Telecom
-              </span>
+              Manasapujha G. R.
             </h1>
             <p style={{ color: THEME.textMuted, fontSize: 16, margin: 0 }}>
-              Building reliable systems with Java, AWS, SQL, CI/CD, and data tooling. Passionate about scalable delivery,
-              clean code, and outcome-driven engineering.
+              Full-Stack Developer · Healthcare & Telecom · AWS
             </p>
             <div style={{ display: "flex", gap: 12, marginTop: 18 }}>
               <a href="#projects" style={{ background: THEME.primary, color: "#fff", textDecoration: "none", padding: "10px 14px", borderRadius: 10, boxShadow: shadow }}>
@@ -205,13 +202,9 @@ export default function PortfolioApp() {
               </a>
             </div>
           </div>
-          <div>
-            <div style={{
-              height: 180, borderRadius: 18,
-              background: `linear-gradient(135deg, ${THEME.gradientA}, ${THEME.gradientB})`,
-              boxShadow: shadow, border: border("#e2e8f0"),
-            }} />
-          </div>
+
+          {/* Profile image replaces the previous blue rectangle */}
+          <img src="/images/profile.jpg" alt="Manasapujha G. R." style={imgStyle} />
         </div>
       </div>
     );
