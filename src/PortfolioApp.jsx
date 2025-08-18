@@ -1,50 +1,53 @@
 import React, { useEffect, useState } from "react";
 
+/**
+ * Colorful, professional UI/UX refresh with real resume download
+ */
 export default function PortfolioApp() {
-  // ---------------- Theme & Helpers ----------------
+  // ---------------- THEME ----------------
   const THEME = {
-    cardBg: "#fff",
-    cardBorder: "#e5e7eb",
-    textMuted: "#374151",
-    link: "#2563eb",
-    shadowSm: "0 1px 2px rgba(0,0,0,0.05)",
+    pageBg: "#f8fafc",      // slate-50
+    text: "#0b1220",
+    textMuted: "#475569",
+    primary: "#2563eb",     // blue-600
+    primaryDark: "#1e40af", // blue-800
+    gradientA: "#7c3aed",   // violet-600
+    gradientB: "#06b6d4",   // cyan-500
+    card: "#ffffff",
+    border: "#e5e7eb",
+    soft: "#f1f5f9",        // slate-100
+    ring: "#93c5fd",        // blue-300
+    chipPalette: ["#f97316", "#06b6d4", "#8b5cf6", "#22c55e", "#eab308", "#ef4444", "#10b981"],
   };
-  const borderStr = (color = THEME.cardBorder) => `1px solid ${color}`; // prevents quote typos
+  const border = (c = THEME.border) => `1px solid ${c}`;
+  const shadow = "0 10px 25px rgba(2, 6, 23, .08)";
 
-  // -------- Data --------
+  // ---------------- DATA ----------------
   const skills = [
-    "Java",
-    "SQL",
-    "AWS",
-    "Python",
-    "Git",
-    "Project Management",
-    "Snowflake",
-    "Prompt Engineering",
-    "CI/CD",
-    "Jenkins",
+    "Java", "SQL", "AWS", "Python", "Git",
+    "Project Management", "Snowflake", "Prompt Engineering", "CI/CD", "Jenkins",
   ];
 
   const projects = [
     {
       title: "Environment Manager Plus (EM+)",
       description:
-        "Tool to manage installation of Cerner code into domains using plans for package management, simplifying workflows and reducing installation time.",
+        "Manages installation of Cerner packages into domains using plan-driven workflows to streamline releases and reduce install time.",
     },
     {
       title: "Environment Manager Migration (EMM)",
       description:
-        "Command-line tool to migrate data from Microsoft DB (Environment Manager) to Oracle DB (Environment Manager Plus).",
+        "CLI tool to migrate Environment Manager data from Microsoft DB to Environment Manager Plus (Oracle) with integrity checks.",
     },
     {
       title: "EMR Transformation",
       description:
-        "Digitization of healthcare workflows from admission to discharge, with data archived electronically for future use.",
+        "Digitizes end-to-end hospital workflows from admission to discharge; enables electronic records and archival for future use.",
     },
     {
-      title: "Cerner Cardiovascular Solution",
+      title: "Cardiovascular Solution",
       description:
-        "Automates cardiology workflows, improves cardiac disease management, and streamlines diagnostic imaging.",
+        "Automates cardiology workflows, improves cardiac disease management, and streamlines diagnostic imaging operations.",
     },
   ];
 
@@ -54,10 +57,7 @@ export default function PortfolioApp() {
       url: "https://www.coursera.org/account/accomplishments/records/JXLDXWN62F7B",
       logo: "/logos/coursera.png",
     },
-    {
-      title: "nasscom Women Wizards Rule Tech (WWRT) Cohort 5 - Foundation Course",
-      logo: "/logos/nasscom.png",
-    },
+    { title: "nasscom Women Wizards Rule Tech (WWRT) Cohort 5 - Foundation Course", logo: "/logos/nasscom.png" },
     { title: "Amazon Web Services Cloud Practitioner", logo: "/logos/aws.png" },
     { title: "Python for Data Science and AI", logo: "/logos/coursera.png" },
     { title: "Data Science Methodology", logo: "/logos/coursera.png" },
@@ -65,185 +65,237 @@ export default function PortfolioApp() {
     { title: "What is Data Science?", logo: "/logos/coursera.png" },
   ];
 
-  // -------- Runtime sanity checks (automated "tests") --------
+  // -------- Runtime checks --------
   useEffect(() => {
     const assert = (cond, msg) => { if (!cond) throw new Error(`[portfolio test] ${msg}`); };
-
-    // Data shape tests
     assert(Array.isArray(skills) && skills.length >= 5, "skills should contain at least 5 items");
     assert(projects.length >= 3, "projects should contain at least 3 entries");
-    assert(
-      certifications.some((c) => c.title === "Prompt Engineering for ChatGPT"),
-      "certifications must include 'Prompt Engineering for ChatGPT'"
-    );
-
-    // Style helper tests (catch the Vercel error type)
-    const b = borderStr();
-    assert(/^1px solid #[0-9a-fA-F]{6}$/.test(b), `borderStr() invalid: ${b}`);
-    ["#e5e7eb", "#d1d5db"].forEach((c) => assert(borderStr(c) === `1px solid ${c}`, `borderStr(${c}) wrong`));
+    assert(certifications.some(c => c.title === "Prompt Engineering for ChatGPT"),
+      "certifications must include 'Prompt Engineering for ChatGPT'");
+    ["#e5e7eb", "#d1d5db"].forEach(c => assert(border(c) === `1px solid ${c}`, `border(${c}) wrong`));
   }, []);
 
-  // -------- UI Components --------
-  function Layout({ children }) {
+  // ---------------- LAYOUT ----------------
+  function Shell({ children }) {
     return (
-      <div style={{ fontFamily: "ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial" }}>
-        <Navbar />
-        <main style={{ maxWidth: 900, margin: "0 auto", padding: "24px" }}>{children}</main>
-        <footer style={{ textAlign: "center", padding: "16px", borderTop: borderStr("#eeeeee"), color: "#555" }}>
+      <div style={{ background: THEME.pageBg, minHeight: "100vh" }}>
+        <Nav />
+        <header style={{
+          background: `radial-gradient(1100px 500px at 10% -20%, ${THEME.gradientA}22, transparent 60%),
+                       radial-gradient(1100px 600px at 100% -40%, ${THEME.gradientB}22, transparent 60%)`,
+          borderBottom: border("#e2e8f0"),
+        }}>
+          <Hero />
+        </header>
+        <main style={{ maxWidth: 1100, margin: "0 auto", padding: "32px 20px 64px" }}>{children}</main>
+        <footer style={{ textAlign: "center", padding: 20, borderTop: border(), color: THEME.textMuted }}>
           © 2025 Manasapujha G. R.
         </footer>
       </div>
     );
   }
 
-  function Navbar() {
-    const navStyle = {
-      position: "sticky",
-      top: 0,
-      zIndex: 50,
-      display: "flex",
-      justifyContent: "space-between",
-      alignItems: "center",
-      padding: "12px 16px",
-      background: "#1f2937",
-      color: "white",
-      boxShadow: "0 2px 8px rgba(0,0,0,0.15)",
+  function Nav() {
+    const linkBase = {
+      color: THEME.text,
+      textDecoration: "none",
+      padding: "8px 10px",
+      borderRadius: 10,
     };
-    const listStyle = { display: "flex", gap: 16, listStyle: "none", margin: 0, padding: 0 };
+    const linkWrap = (href, label) => (
+      <a
+        href={href}
+        style={linkBase}
+        onMouseEnter={(e)=>e.currentTarget.style.background=THEME.soft}
+        onMouseLeave={(e)=>e.currentTarget.style.background="transparent"}
+      >
+        {label}
+      </a>
+    );
 
     return (
-      <nav style={navStyle}>
-        <div style={{ fontWeight: 700 }}>Manasapujha G. R.</div>
-        <ul style={listStyle}>
-          <li><a href="#skills" style={{ color: "#fff", textDecoration: "none" }}>Skills</a></li>
-          <li><a href="#projects" style={{ color: "#fff", textDecoration: "none" }}>Projects</a></li>
-          <li><a href="#certifications" style={{ color: "#fff", textDecoration: "none" }}>Certifications</a></li>
-          <li><a href="#contact" style={{ color: "#fff", textDecoration: "none" }}>Contact</a></li>
-          <li><a href="/Manasapujha_Resume.pdf" download style={{ color: "#fff", textDecoration: "none" }}>Resume</a></li>
-        </ul>
+      <nav style={{
+        position: "sticky",
+        top: 0,
+        zIndex: 40,
+        backdropFilter: "saturate(180%) blur(8px)",
+        background: "rgba(255,255,255,.8)",
+        borderBottom: border("#e2e8f0"),
+      }}>
+        <div style={{
+          maxWidth: 1100, margin: "0 auto", padding: "10px 20px",
+          display: "flex", alignItems: "center", justifyContent: "space-between"
+        }}>
+          <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
+            <div style={{
+              width: 34, height: 34, borderRadius: 10,
+              background: `linear-gradient(135deg, ${THEME.gradientA}, ${THEME.gradientB})`,
+              boxShadow: shadow,
+            }} />
+            <strong style={{ fontSize: 16 }}>Manasapujha G. R.</strong>
+          </div>
+          <div style={{ display: "flex", gap: 8 }}>
+            {linkWrap("#skills", "Skills")}
+            {linkWrap("#projects", "Projects")}
+            {linkWrap("#certifications", "Certifications")}
+            {linkWrap("#contact", "Contact")}
+            {/* REAL DOWNLOAD: points to /public/Manasapujha_Resume.pdf and triggers download */}
+            <a
+              href="/Manasapujha_Resume.pdf"
+              download="Manasapujha_G_R_Resume.pdf"
+              style={{ ...linkBase, color: THEME.primary, border: border(THEME.primary), padding: "8px 12px" }}
+              title="Download Resume"
+            >
+              Resume
+            </a>
+          </div>
+        </div>
       </nav>
     );
   }
 
-  function SectionTitle({ children }) {
-    return <h2 style={{ fontSize: 24, fontWeight: 800, marginBottom: 16 }}>{children}</h2>;
-  }
-
-  function Hero() {
-    const pill = {
-      display: "inline-block",
-      padding: "6px 10px",
-      borderRadius: 9999,
-      background: "#eef2ff",
-      color: "#4338ca",
-      fontSize: 12,
-      marginTop: 8,
-    };
+  function Section({ id, title, subtitle, children }) {
     return (
-      <section style={{ textAlign: "center", padding: "32px 0" }}>
-        <h1 style={{ fontSize: 32, fontWeight: 800, margin: 0 }}>Manasapujha G. R.</h1>
-        <p style={{ marginTop: 8, fontSize: 16 }}>Software Development Engineer Senior at CSG Systems International (India)</p>
-        <p style={{ marginTop: 4, color: "#4b5563" }}>Full-Stack Developer | Healthcare IT & Telecom IT | AWS</p>
-        <span style={pill}>Open to collaboration</span>
+      <section id={id} style={{ marginTop: 42 }}>
+        <div style={{ marginBottom: 16 }}>
+          <h2 style={{ fontSize: 26, fontWeight: 800, margin: 0 }}>{title}</h2>
+          {subtitle && <p style={{ margin: "6px 0 0", color: THEME.textMuted }}>{subtitle}</p>}
+        </div>
+        {children}
       </section>
     );
   }
 
-  function Skills() {
-    const card = {
-      background: THEME.cardBg,
-      border: borderStr(),
-      borderRadius: 12,
-      padding: 12,
-      textAlign: "center",
-      boxShadow: "0 1px 2px rgba(0,0,0,0.04)",
-      transition: "all 0.3s ease",
-    };
-
+  // ---------------- SECTIONS ----------------
+  function Hero() {
     return (
-      <section id="skills" style={{ marginTop: 24 }}>
-        <SectionTitle>Skills</SectionTitle>
-        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(140px, 1fr))", gap: 12 }}>
+      <div style={{ maxWidth: 1100, margin: "0 auto", padding: "60px 20px" }}>
+        <div style={{ display: "grid", gap: 16, alignItems: "center", gridTemplateColumns: "1.1fr .9fr" }}>
+          <div>
+            <div style={{
+              display: "inline-flex", gap: 8, alignItems: "center",
+              padding: "6px 10px", borderRadius: 9999, background: "#ffffffa6",
+              border: border("#e2e8f0")
+            }}>
+              <span style={{ width: 8, height: 8, borderRadius: 9999, background: THEME.primary }} />
+              <span style={{ fontSize: 12, color: THEME.text }}>
+                Software Development Engineer Senior · CSG Systems International (India)
+              </span>
+            </div>
+            <h1 style={{ fontSize: 40, lineHeight: 1.15, margin: "16px 0 8px" }}>
+              Full-Stack Developer in{" "}
+              <span style={{
+                background: `linear-gradient(90deg, ${THEME.gradientA}, ${THEME.gradientB})`,
+                WebkitBackgroundClip: "text",
+                color: "transparent"
+              }}>
+                Healthcare & Telecom
+              </span>
+            </h1>
+            <p style={{ color: THEME.textMuted, fontSize: 16, margin: 0 }}>
+              Building reliable systems with Java, AWS, SQL, CI/CD, and data tooling. Passionate about scalable delivery,
+              clean code, and outcome-driven engineering.
+            </p>
+            <div style={{ display: "flex", gap: 12, marginTop: 18 }}>
+              <a href="#projects" style={{ background: THEME.primary, color: "#fff", textDecoration: "none", padding: "10px 14px", borderRadius: 10, boxShadow: shadow }}>
+                View Projects
+              </a>
+              <a href="/Manasapujha_Resume.pdf" download="Manasapujha_G_R_Resume.pdf" style={{ background: THEME.soft, color: THEME.text, textDecoration: "none", padding: "10px 14px", borderRadius: 10, border: border() }}>
+                Download Resume
+              </a>
+            </div>
+          </div>
+          <div>
+            <div style={{
+              height: 180, borderRadius: 18,
+              background: `linear-gradient(135deg, ${THEME.gradientA}, ${THEME.gradientB})`,
+              boxShadow: shadow, border: border("#e2e8f0"),
+            }} />
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  function Skills() {
+    return (
+      <Section id="skills" title="Skills" subtitle="Languages, platforms & tooling I use to ship reliably">
+        <div style={{ display: "flex", flexWrap: "wrap", gap: 10 }}>
           {skills.map((s, i) => (
-            <div key={i} style={card} onMouseEnter={(e) => (e.currentTarget.style.transform = "scale(1.05)")} onMouseLeave={(e) => (e.currentTarget.style.transform = "scale(1)")}>{s}</div>
+            <span
+              key={i}
+              style={{
+                fontSize: 13,
+                padding: "8px 12px",
+                borderRadius: 9999,
+                color: THEME.text,
+                background: `${THEME.chipPalette[i % THEME.chipPalette.length]}22`,
+                border: border(`${THEME.chipPalette[i % THEME.chipPalette.length]}55`),
+              }}
+            >
+              {s}
+            </span>
           ))}
         </div>
-      </section>
+      </Section>
     );
   }
 
   function Projects() {
     const card = {
-      background: THEME.cardBg,
-      border: borderStr(),
-      borderRadius: 12,
-      padding: 16,
-      boxShadow: THEME.shadowSm,
-      transition: "all 0.3s ease",
+      background: THEME.card, border: border(), borderRadius: 16, padding: 18, boxShadow: shadow,
+      position: "relative", overflow: "hidden",
     };
-    const title = { fontWeight: 700, fontSize: 16, marginBottom: 8 };
-    const text = { color: THEME.textMuted, lineHeight: 1.5 };
+    const title = { fontWeight: 800, fontSize: 18, margin: 0 };
+    const text = { color: THEME.textMuted, lineHeight: 1.6, margin: "8px 0 12px" };
 
     return (
-      <section id="projects" style={{ marginTop: 32 }}>
-        <SectionTitle>Projects</SectionTitle>
-        <div style={{ display: "grid", gap: 16 }}>
+      <Section id="projects" title="Projects" subtitle="Selected work across healthcare IT and environment management">
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(280px, 1fr))", gap: 16 }}>
           {projects.map((p, i) => (
-            <div key={i} style={card} onMouseEnter={(e) => (e.currentTarget.style.transform = "scale(1.02)")} onMouseLeave={(e) => (e.currentTarget.style.transform = "scale(1)")}>
-              <div style={title}>{p.title}</div>
-              <p style={text}>{p.description}</p>
-            </div>
+            <article key={i} style={card}>
+              <div style={{ position: "absolute", inset: 0, background: `linear-gradient(90deg, ${THEME.gradientA}06, ${THEME.gradientB}06)` }} />
+              <div style={{ position: "relative" }}>
+                <h3 style={title}>{p.title}</h3>
+                <p style={text}>{p.description}</p>
+                <div style={{ display: "flex", gap: 8 }}>
+                  <a href="#contact" style={{ color: THEME.primaryDark, textDecoration: "none", fontWeight: 600 }}>Discuss →</a>
+                </div>
+              </div>
+            </article>
           ))}
         </div>
-      </section>
+      </Section>
     );
   }
 
   function Certifications() {
+    const grid = { display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(260px, 1fr))", gap: 16 };
     const card = {
-      display: "flex",
-      alignItems: "center",
-      gap: 12,
-      background: THEME.cardBg,
-      border: borderStr(),
-      borderRadius: 12,
-      padding: 12,
-      boxShadow: THEME.shadowSm,
-      transition: "all 0.3s ease",
+      display: "flex", alignItems: "center", gap: 12,
+      background: THEME.card, border: border(), borderRadius: 14, padding: 14, boxShadow: shadow,
     };
-
-    const grid = {
-      display: "grid",
-      gridTemplateColumns: "repeat(auto-fill, minmax(260px, 1fr))",
-      gap: 16,
-    };
-
-    const logoStyle = { width: 40, height: 40, objectFit: "contain", borderRadius: 8, background: THEME.cardBg };
+    const logo = { width: 40, height: 40, borderRadius: 10, objectFit: "contain", background: THEME.soft, border: border("#e2e8f0") };
 
     return (
-      <section id="certifications" style={{ marginTop: 32 }}>
-        <SectionTitle>Certifications</SectionTitle>
+      <Section id="certifications" title="Certifications" subtitle="Continuous learning to keep skills sharp">
         <div style={grid}>
           {certifications.map((c, i) => (
-            <div key={i} style={card} onMouseEnter={(e) => (e.currentTarget.style.transform = "scale(1.03)")} onMouseLeave={(e) => (e.currentTarget.style.transform = "scale(1)")}>
-              {c.logo ? (
-                <img src={c.logo} alt={c.title} style={logoStyle} />
-              ) : (
-                <div style={{ ...logoStyle, display: "grid", placeItems: "center", background: "#f3f4f6" }}>🏅</div>
-              )}
+            <div key={i} style={card}>
+              {c.logo ? <img src={c.logo} alt={c.title} style={logo} /> : <div style={{ ...logo, display: "grid", placeItems: "center" }}>🏅</div>}
               <div>
                 {c.url ? (
-                  <a href={c.url} target="_blank" rel="noreferrer" style={{ color: THEME.link, fontWeight: 600, textDecoration: "none" }}>
+                  <a href={c.url} target="_blank" rel="noreferrer" style={{ color: THEME.primary, fontWeight: 700, textDecoration: "none" }}>
                     {c.title}
                   </a>
                 ) : (
-                  <span style={{ fontWeight: 600 }}>{c.title}</span>
+                  <span style={{ fontWeight: 700 }}>{c.title}</span>
                 )}
               </div>
             </div>
           ))}
         </div>
-      </section>
+      </Section>
     );
   }
 
@@ -251,13 +303,8 @@ export default function PortfolioApp() {
     const [formData, setFormData] = useState({ name: "", email: "", message: "" });
     const [status, setStatus] = useState("");
 
-    const card = {
-      background: THEME.cardBg,
-      border: borderStr(),
-      borderRadius: 12,
-      padding: 16,
-      boxShadow: THEME.shadowSm,
-    };
+    const card = { background: THEME.card, border: border(), borderRadius: 16, padding: 18, boxShadow: shadow };
+    const input = { padding: 12, borderRadius: 10, border: border("#d1d5db"), outline: "none" };
 
     async function handleSubmit(e) {
       e.preventDefault();
@@ -280,12 +327,7 @@ export default function PortfolioApp() {
     }
 
     return (
-      <section id="contact" style={{ marginTop: 32 }}>
-        <SectionTitle>Contact</SectionTitle>
-        <p style={{ color: THEME.textMuted, marginBottom: 12 }}>
-          Email: <a href="mailto:contact@manasapujha.dev" style={{ color: THEME.link, textDecoration: "none" }}>contact@manasapujha.dev</a> ·{" "}
-          <a href="https://www.linkedin.com/in/manasapujha" target="_blank" rel="noreferrer" style={{ color: THEME.link, textDecoration: "none" }}>LinkedIn</a>
-        </p>
+      <Section id="contact" title="Contact" subtitle="Say hello or request my full project portfolio">
         <form onSubmit={handleSubmit} style={card}>
           <div style={{ display: "grid", gap: 12 }}>
             <input
@@ -295,7 +337,9 @@ export default function PortfolioApp() {
               value={formData.name}
               onChange={(e) => setFormData({ ...formData, name: e.target.value })}
               required
-              style={{ padding: 10, borderRadius: 8, border: borderStr("#d1d5db") }}
+              style={input}
+              onFocus={(e)=> e.currentTarget.style.boxShadow = `0 0 0 4px ${THEME.ring}55`}
+              onBlur={(e)=> e.currentTarget.style.boxShadow = "none"}
             />
             <input
               type="email"
@@ -304,7 +348,9 @@ export default function PortfolioApp() {
               value={formData.email}
               onChange={(e) => setFormData({ ...formData, email: e.target.value })}
               required
-              style={{ padding: 10, borderRadius: 8, border: borderStr("#d1d5db") }}
+              style={input}
+              onFocus={(e)=> e.currentTarget.style.boxShadow = `0 0 0 4px ${THEME.ring}55`}
+              onBlur={(e)=> e.currentTarget.style.boxShadow = "none"}
             />
             <textarea
               name="message"
@@ -313,26 +359,27 @@ export default function PortfolioApp() {
               onChange={(e) => setFormData({ ...formData, message: e.target.value })}
               required
               rows={5}
-              style={{ padding: 10, borderRadius: 8, border: borderStr("#d1d5db") }}
+              style={{ ...input, resize: "vertical" }}
+              onFocus={(e)=> e.currentTarget.style.boxShadow = `0 0 0 4px ${THEME.ring}55`}
+              onBlur={(e)=> e.currentTarget.style.boxShadow = "none"}
             />
-            <button type="submit" style={{ background: THEME.link, color: "white", padding: "10px 14px", borderRadius: 10, border: 0, cursor: "pointer" }}>
+            <button type="submit" style={{ background: THEME.primary, color: "white", padding: "10px 14px", borderRadius: 10, border: 0, cursor: "pointer" }}>
               Send Message
             </button>
             {status && <p style={{ color: "#6b7280", fontSize: 14 }}>{status}</p>}
           </div>
         </form>
-      </section>
+      </Section>
     );
   }
 
-  // -------- Page --------
+  // ---------------- PAGE ----------------
   return (
-    <Layout>
-      <Hero />
+    <Shell>
       <Skills />
       <Projects />
       <Certifications />
       <Contact />
-    </Layout>
+    </Shell>
   );
 }

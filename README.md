@@ -1,19 +1,19 @@
-# Manasapujha G. R. — Tech Portfolio (Vite + React)
+# Manasapujha G. R. — Portfolio (Vite + React)
 
 ## Quick Start
 ```bash
 npm install
 npm run dev
-# open http://localhost:5173
+# open the printed local URL (e.g., http://localhost:5173)
 ```
 
-## Build
+## Production Build
 ```bash
 npm run build
 npm run preview
 ```
 
-### Notes
-- Logos live under `public/logos/` and currently use 1x1 PNG placeholders.
-- Contact form posts to Formspree: replace `your-form-id` in `src/PortfolioApp.jsx`.
-- Resume link expects `public/Manasapujha_Resume.pdf`.
+## Notes
+- The Resume button downloads `public/Manasapujha_Resume.pdf`.
+- Replace the placeholder logos in `public/logos/` with real images when ready.
+- Contact form uses Formspree; set your form endpoint in `src/PortfolioApp.jsx`.
