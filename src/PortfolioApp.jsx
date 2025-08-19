@@ -3,6 +3,8 @@ import React, { useEffect, useState } from "react";
 /**
  * Colorful, professional UI/UX refresh with real resume download
  * + Hero image (replaces the old blue rectangle)
+ * + Update: "View Projects" uses outlined style like "Download Resume"
+ * + Update: Navbar "Resume" is a plain text link (like "Contact") while still downloading the file
  */
 export default function PortfolioApp() {
   // ---------------- THEME ----------------
@@ -102,6 +104,7 @@ export default function PortfolioApp() {
       textDecoration: "none",
       padding: "8px 10px",
       borderRadius: 10,
+      transition: "background .15s ease",
     };
     const linkWrap = (href, label) => (
       <a
@@ -135,12 +138,14 @@ export default function PortfolioApp() {
             {linkWrap("#projects", "Projects")}
             {linkWrap("#certifications", "Certifications")}
             {linkWrap("#contact", "Contact")}
-            {/* REAL DOWNLOAD: points to /public/Manasapujha_Resume.pdf and triggers download */}
+            {/* UPDATE: Navbar Resume now looks like a plain link (like Contact) but still downloads */}
             <a
               href="/Manasapujha_Resume.pdf"
               download="Manasapujha_G_R_Resume.pdf"
-              style={{ ...linkBase, color: THEME.primary, border: border(THEME.primary), padding: "8px 12px" }}
               title="Download Resume"
+              style={linkBase}
+              onMouseEnter={(e)=>e.currentTarget.style.background=THEME.soft}
+              onMouseLeave={(e)=>e.currentTarget.style.background="transparent"}
             >
               Resume
             </a>
@@ -173,6 +178,17 @@ export default function PortfolioApp() {
       border: border("#e2e8f0"),
     };
 
+    const outlinedBtn = {
+      background: THEME.soft,
+      color: THEME.text,
+      textDecoration: "none",
+      padding: "10px 14px",
+      borderRadius: 10,
+      border: border(),
+      boxShadow: "none",
+      transition: "background .15s ease",
+    };
+
     return (
       <div style={{ maxWidth: 1100, margin: "0 auto", padding: "60px 20px" }}>
         <div style={{ display: "grid", gap: 24, alignItems: "center", gridTemplateColumns: "1fr auto" }}>
@@ -194,10 +210,22 @@ export default function PortfolioApp() {
               Full-Stack Developer · Healthcare & Telecom · AWS
             </p>
             <div style={{ display: "flex", gap: 12, marginTop: 18 }}>
-              <a href="#projects" style={{ background: THEME.primary, color: "#fff", textDecoration: "none", padding: "10px 14px", borderRadius: 10, boxShadow: shadow }}>
+              {/* UPDATE: View Projects now uses the same outlined style as Download Resume */}
+              <a
+                href="#projects"
+                style={outlinedBtn}
+                onMouseEnter={(e)=>e.currentTarget.style.background="#ffffff"}
+                onMouseLeave={(e)=>e.currentTarget.style.background=THEME.soft}
+              >
                 View Projects
               </a>
-              <a href="/Manasapujha_Resume.pdf" download="Manasapujha_G_R_Resume.pdf" style={{ background: THEME.soft, color: THEME.text, textDecoration: "none", padding: "10px 14px", borderRadius: 10, border: border() }}>
+              <a
+                href="/Manasapujha_Resume.pdf"
+                download="Manasapujha_G_R_Resume.pdf"
+                style={outlinedBtn}
+                onMouseEnter={(e)=>e.currentTarget.style.background="#ffffff"}
+                onMouseLeave={(e)=>e.currentTarget.style.background=THEME.soft}
+              >
                 Download Resume
               </a>
             </div>
