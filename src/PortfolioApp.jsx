@@ -527,7 +527,7 @@ export default function PortfolioApp() {
         ))}
       </Section>
     );
-  }
+
 
 
     const grouped = groups.map(g => ({ name: g.name, items: groupItems(g.test) })).filter(g => g.items.length > 0);
