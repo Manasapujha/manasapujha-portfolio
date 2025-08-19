@@ -555,6 +555,7 @@ export default function PortfolioApp() {
         ))}
       </Section>
     );
+  }
 
 
           <h3 style={{gridColumn: "1/-1", marginTop: 20}}>Coursera</h3>
