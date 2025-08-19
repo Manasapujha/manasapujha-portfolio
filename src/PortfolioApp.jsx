@@ -466,48 +466,7 @@ export default function PortfolioApp() {
   }
 
 
-    const grouped = groups.map(g => ({ name: g.name, items: groupItems(g.test) })).filter(g => g.items.length > 0);
-
-    return (
-      <Section id="certifications" title="Certifications" subtitle="Organized for quick scanning">
-        {grouped.map((g, gi) => (
-          <div key={gi} style={{ marginTop: gi === 0 ? 0 : 8 }}>
-            {gi > 0 && <div style={divider} />}
-            <div style={groupTitle}>{g.name}</div>
-            <div style={grid}>
-              {g.items.map((c, i) => (
-                <div
-                  key={i}
-                  style={cardBase}
-                  onMouseEnter={(e) => {
-                    e.currentTarget.style.transform = "translateY(-4px)";
-                    e.currentTarget.style.boxShadow = "0 12px 30px rgba(2,6,23,.12)";
-                    e.currentTarget.style.background = THEME.soft;
-                  }}
-                  onMouseLeave={(e) => {
-                    e.currentTarget.style.transform = "none";
-                    e.currentTarget.style.boxShadow = shadow;
-                    e.currentTarget.style.background = THEME.card;
-                  }}
-                >
-                  {c.logo ? <img src={c.logo} alt={c.title} style={logo} /> : <div style={{ ...logo, display: "grid", placeItems: "center" }}>🏅</div>}
-                  <div>
-                    {c.url ? (
-                      <a href={c.url} target="_blank" rel="noreferrer" style={{ color: THEME.primary, fontWeight: 700, textDecoration: "none" }}>
-                        {c.title}
-                      </a>
-                    ) : (
-                      <span style={{ fontWeight: 700 }}>{c.title}</span>
-                    )}
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
-        ))}
-      </Section>
-    );
-  }
+    }
 
 
     const grouped = groups.map(g => ({ name: g.name, items: groupItems(g.test) })).filter(g => g.items.length > 0);
