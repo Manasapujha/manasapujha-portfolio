@@ -5,7 +5,6 @@ import React, { useEffect, useState } from "react";
  * + Hero image (replaces the old blue rectangle)
  * + Update: "View Projects" uses outlined style like "Download Resume"
  * + Update: Navbar "Resume" is a plain text link (like "Contact") while still downloading the file
- * + Update:
  */
 export default function PortfolioApp() {
   // ---------------- THEME ----------------
