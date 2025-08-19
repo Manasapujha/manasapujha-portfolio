@@ -381,15 +381,77 @@ export default function PortfolioApp() {
     );
   }
 
-
-  
-  
-  
-  
-  
-  
   function Certifications() {
-    const grid = { display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(260px, 1fr))", gap: 16 }
+    const grid = { display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(260px, 1fr))", gap: 16 };
+    const baseCard = {
+      display: "flex", alignItems: "center", gap: 12,
+      background: THEME.card, border: border(), borderRadius: 14, padding: 14, boxShadow: shadow,
+      transition: "transform .15s ease, box-shadow .15s ease, background .2s ease",
+    };
+    const logo = { width: 40, height: 40, borderRadius: 10, objectFit: "contain", background: THEME.soft, border: border("#e2e8f0") };
+    const groupTitle = { fontSize: 14, fontWeight: 800, color: THEME.textMuted, margin: "18px 0 8px" };
+    const divider = { borderTop: border("#e5e7eb"), margin: "20px 0" };
+
+    const groups = [
+      { name: "🎯 Core Certifications", test: (c) => c.title === "Amazon Web Services Cloud Practitioner" || c.title === "Prompt Engineering for ChatGPT" },
+      { name: "🎓 Coursera",            test: (c) => (c.logo || "").includes("/logos/coursera.png") && c.title !== "Prompt Engineering for ChatGPT" },
+      { name: "🏢 NASSCOM",             test: (c) => (c.title || "").toLowerCase().includes("nasscom") },
+      { name: "📂 Other",               test: (_) => true },
+    ];
+
+    const seen = new Set();
+    function groupItems(testFn) {
+      return certifications.filter(c => testFn(c) && !seen.has(c.title)).map(c => { seen.add(c.title); return c; });
+    }
+
+    const grouped = groups.map(g => ({ name: g.name, items: groupItems(g.test) })).filter(g => g.items.length > 0);
+
+    function CardItem({ cert }) {
+      const [hover, setHover] = React.useState(false);
+      const style = {
+        ...baseCard,
+        transform: hover ? "translateY(-2px)" : "none",
+        boxShadow: hover ? "0 14px 30px rgba(2,6,23,.12)" : shadow,
+        background: hover ? "#f9fafb" : THEME.card,
+      };
+      return (
+        <div
+          style={style}
+          onMouseEnter={() => setHover(true)}
+          onMouseLeave={() => setHover(false)}
+        >
+          {cert.logo ? <img src={cert.logo} alt={cert.title} style={logo} /> : <div style={{ ...logo, display: "grid", placeItems: "center" }}>🏅</div>}
+          <div>
+            {cert.url ? (
+              <a href={cert.url} target="_blank" rel="noreferrer" style={{ color: THEME.primary, fontWeight: 700, textDecoration: "none" }}>
+                {cert.title}
+              </a>
+            ) : (
+              <span style={{ fontWeight: 700 }}>{cert.title}</span>
+            )}
+          </div>
+        </div>
+      );
+    }
+
+    return (
+      <Section id="certifications" title="Certifications" subtitle="Organized for quick scanning">
+        {grouped.map((g, gi) => (
+          <div key={gi} style={{ marginTop: gi === 0 ? 0 : 8 }}>
+            {gi > 0 && <div style={divider} />}
+            <div style={groupTitle}>{g.name}</div>
+            <div style={grid}>
+              {g.items.map((c, i) => (
+                <CardItem key={i} cert={c} />
+              ))}
+            </div>
+          </div>
+        ))}
+      </Section>
+    );
+  }
+
+
 
   function Contact() {
     const [formData, setFormData] = useState({ name: "", email: "", message: "" });
