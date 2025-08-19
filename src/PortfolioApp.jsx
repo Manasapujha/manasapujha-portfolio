@@ -130,9 +130,7 @@ export default function PortfolioApp() {
           maxWidth: 1100, margin: "0 auto", padding: "10px 20px",
           display: "flex", alignItems: "center", justifyContent: "space-between"
         }}>
-          <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
-            <strong style={{ fontSize: 16 }}>Manasapujha G. R.</strong>
-          </div>
+          
           <div style={{ display: "flex", gap: 8 }}>
             {linkWrap("#skills", "Skills")}
             {linkWrap("#projects", "Projects")}
