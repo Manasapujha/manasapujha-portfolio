@@ -419,7 +419,7 @@ export default function PortfolioApp() {
           onMouseEnter={() => setHover(true)}
           onMouseLeave={() => setHover(false)}
         >
-          {cert.logo ? <img src={cert.logo} alt={cert.title} style={logo} /> : <div style={{ ...logo, display: "grid", placeItems: "center" }}>🏅</div>}
+          
           <div>
             {cert.url ? (
               <a href={cert.url} target="_blank" rel="noreferrer" style={{ color: THEME.primary, fontWeight: 700, textDecoration: "none" }}>
