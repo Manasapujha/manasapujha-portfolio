@@ -54,24 +54,15 @@ export default function PortfolioApp() {
     },
   ];
 
-  const certifications = [,
-    ,
-    { title: "Amazon Web Services Cloud Practitioner", logo: "/logos/aws.png" },
-    ,
-    { title: "Prompt Engineering for ChatGPT", logo: "/logos/coursera.png" },
-    ,
-    ,
-    { title: "Data Science Methodology", logo: "/logos/coursera.png" },
-    ,
-    ,
-    { title: "Open Source Tools for Data Science", logo: "/logos/coursera.png" },
-    ,
-    ,
-    { title: "Python for Data Science and AI", logo: "/logos/coursera.png" },
-    ,
-    ,
-    { title: "What is Data Science?", logo: "/logos/coursera.png" },
-    { title: "nasscom Women Wizards Rule Tech (WWRT) Cohort 5 - Foundation Course", logo: "/logos/nasscom.png" }];
+  const certifications = [
+  { title: "Amazon Web Services Cloud Practitioner", logo: "/logos/aws.png" },
+  { title: "Prompt Engineering for ChatGPT", logo: "/logos/coursera.png" },
+  { title: "Python for Data Science and AI", logo: "/logos/coursera.png" },
+  { title: "Data Science Methodology", logo: "/logos/coursera.png" },
+  { title: "Open Source Tools for Data Science", logo: "/logos/coursera.png" },
+  { title: "What is Data Science?", logo: "/logos/coursera.png" },
+  { title: "nasscom Women Wizards Rule Tech (WWRT) Cohort 5 - Foundation Course", logo: "/logos/nasscom.png" }
+];
 
   // -------- Runtime checks --------
   useEffect(() => {
@@ -389,12 +380,6 @@ export default function PortfolioApp() {
     );
   }
 
-
-  
-  
-  
-  
-  
   function Certifications() {
     const grid = { display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(260px, 1fr))", gap: 16 };
     const baseCard = {
@@ -418,7 +403,7 @@ export default function PortfolioApp() {
       return certifications.filter(c => testFn(c) && !seen.has(c.title)).map(c => { seen.add(c.title); return c; });
     }
 
-    const grouped1 = groups.map(g => ({ name: g.name, items: groupItems(g.test) })).filter(g => g.items.length > 0);
+    const grouped = groups.map(g => ({ name: g.name, items: groupItems(g.test) })).filter(g => g.items.length > 0);
 
     function CardItem({ cert }) {
       const [hover, setHover] = React.useState(false);
@@ -450,7 +435,7 @@ export default function PortfolioApp() {
 
     return (
       <Section id="certifications" title="Certifications" subtitle="Organized for quick scanning">
-        {grouped1.map((g, gi) => (
+        {grouped.map((g, gi) => (
           <div key={gi} style={{ marginTop: gi === 0 ? 0 : 8 }}>
             {gi > 0 && <div style={divider} />}
             <div style={groupTitle}>{g.name}</div>
@@ -466,165 +451,6 @@ export default function PortfolioApp() {
   }
 
 
-    const grouped2 = groups.map(g => ({ name: g.name, items: groupItems(g.test) })).filter(g => g.items.length > 0);
-
-    return (
-      <Section id="certifications" title="Certifications" subtitle="Organized for quick scanning">
-        {grouped2.map((g, gi) => (
-          <div key={gi} style={{ marginTop: gi === 0 ? 0 : 8 }}>
-            {gi > 0 && <div style={divider} />}
-            <div style={groupTitle}>{g.name}</div>
-            <div style={grid}>
-              {g.items.map((c, i) => (
-                <div
-                  key={i}
-                  style={cardBase}
-                  onMouseEnter={(e) => {
-                    e.currentTarget.style.transform = "translateY(-4px)";
-                    e.currentTarget.style.boxShadow = "0 12px 30px rgba(2,6,23,.12)";
-                    e.currentTarget.style.background = THEME.soft;
-                  }}
-                  onMouseLeave={(e) => {
-                    e.currentTarget.style.transform = "none";
-                    e.currentTarget.style.boxShadow = shadow;
-                    e.currentTarget.style.background = THEME.card;
-                  }}
-                >
-                  {c.logo ? <img src={c.logo} alt={c.title} style={logo} /> : <div style={{ ...logo, display: "grid", placeItems: "center" }}>🏅</div>}
-                  <div>
-                    {c.url ? (
-                      <a href={c.url} target="_blank" rel="noreferrer" style={{ color: THEME.primary, fontWeight: 700, textDecoration: "none" }}>
-                        {c.title}
-                      </a>
-                    ) : (
-                      <span style={{ fontWeight: 700 }}>{c.title}</span>
-                    )}
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
-        ))}
-      </Section>
-    );
-  }
-
-
-    const grouped3 = groups.map(g => ({ name: g.name, items: groupItems(g.test) })).filter(g => g.items.length > 0);
-
-    return (
-      <Section id="certifications" title="Certifications" subtitle="Organized for quick scanning">
-        {grouped3.map((g, gi) => (
-          <div key={gi} style={{ marginTop: gi === 0 ? 0 : 8 }}>
-            {gi > 0 && <div style={divider} />}
-            <div style={groupTitle}>{g.name}</div>
-            <div style={grid}>
-              {g.items.map((c, i) => (
-                <div key={i} style={card}>
-                  {c.logo ? <img src={c.logo} alt={c.title} style={logo} /> : <div style={{ ...logo, display: "grid", placeItems: "center" }}>🏅</div>}
-                  <div>
-                    {c.url ? (
-                      <a href={c.url} target="_blank" rel="noreferrer" style={{ color: THEME.primary, fontWeight: 700, textDecoration: "none" }}>
-                        {c.title}
-                      </a>
-                    ) : (
-                      <span style={{ fontWeight: 700 }}>{c.title}</span>
-                    )}
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
-        ))}
-      </Section>
-    );
-
-
-    const grouped4 = groups.map(g => ({ name: g.name, items: groupItems(g.test) })).filter(g => g.items.length > 0);
-
-    return (
-      <Section id="certifications" title="Certifications" subtitle="Organized for quick scanning">
-        {grouped4.map((g, gi) => (
-          <div key={gi} style={{ marginTop: gi === 0 ? 0 : 8 }}>
-            <div style={groupTitle}>{g.name}</div>
-            <div style={grid}>
-              {g.items.map((c, i) => (
-                <div key={i} style={card}>
-                  {c.logo ? <img src={c.logo} alt={c.title} style={logo} /> : <div style={{ ...logo, display: "grid", placeItems: "center" }}>🏅</div>}
-                  <div>
-                    {c.url ? (
-                      <a href={c.url} target="_blank" rel="noreferrer" style={{ color: THEME.primary, fontWeight: 700, textDecoration: "none" }}>
-                        {c.title}
-                      </a>
-                    ) : (
-                      <span style={{ fontWeight: 700 }}>{c.title}</span>
-                    )}
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
-        ))}
-      </Section>
-    );
-
-
-    const grouped5 = groups.map(g => ({ name: g.name, items: groupItems(g.test) })).filter(g => g.items.length > 0);
-
-    return (
-      <Section id="certifications" title="Certifications" subtitle="Organized for quick scanning">
-        {grouped5.map((g, gi) => (
-          <div key={gi} style={{ marginTop: gi === 0 ? 0 : 8 }}>
-            <div style={groupTitle}>{g.name}</div>
-            <div style={grid}>
-              {g.items.map((c, i) => (
-                <div key={i} style={card}>
-                  {c.logo ? <img src={c.logo} alt={c.title} style={logo} /> : <div style={{ ...logo, display: "grid", placeItems: "center" }}>🏅</div>}
-                  <div>
-                    {c.url ? (
-                      <a href={c.url} target="_blank" rel="noreferrer" style={{ color: THEME.primary, fontWeight: 700, textDecoration: "none" }}>
-                        {c.title}
-                      </a>
-                    ) : (
-                      <span style={{ fontWeight: 700 }}>{c.title}</span>
-                    )}
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
-        ))}
-      </Section>
-    );
-
-
-          <h3 style={{gridColumn: "1/-1", marginTop: 20}}>Coursera</h3>
-          {certifications.filter(c => c.logo==="/logos/coursera.png" && !c.title.includes("Prompt Engineering")).map((c,i)=>(
-            <div key={"coursera"+i} style={card}>
-              {c.logo ? <img src={c.logo} alt={c.title} style={logo} /> : <div style={{ ...logo, display: "grid", placeItems: "center" }}>🏅</div>}
-              <div><span style={{ fontWeight: 700 }}>{c.title}</span></div>
-            </div>
-          ))}
-
-          <h3 style={{gridColumn: "1/-1", marginTop: 20}}>NASSCOM</h3>
-          {certifications.filter(c => c.title.includes("nasscom") || c.title.includes("NASSCOM")).map((c,i)=>(
-            <div key={"nasscom"+i} style={card}>
-              {c.logo ? <img src={c.logo} alt={c.title} style={logo} /> : <div style={{ ...logo, display: "grid", placeItems: "center" }}>🏅</div>}
-              <div><span style={{ fontWeight: 700 }}>{c.title}</span></div>
-            </div>
-          ))}
-
-          <h3 style={{gridColumn: "1/-1", marginTop: 20}}>Other</h3>
-          {certifications.filter(c => !c.title.includes("Amazon Web Services") && !c.title.includes("Prompt Engineering") && c.logo!=="/logos/coursera.png" && !c.title.includes("nasscom")).map((c,i)=>(
-            <div key={"other"+i} style={card}>
-              {c.logo ? <img src={c.logo} alt={c.title} style={logo} /> : <div style={{ ...logo, display: "grid", placeItems: "center" }}>🏅</div>}
-              <div><span style={{ fontWeight: 700 }}>{c.title}</span></div>
-            </div>
-          ))}
-        </div>
-      </Section>
-    );
-  }
 
   function Contact() {
     const [formData, setFormData] = useState({ name: "", email: "", message: "" });
