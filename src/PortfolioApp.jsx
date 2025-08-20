@@ -2,6 +2,11 @@ import React, { useEffect, useState } from "react";
 
 /**
  * Colorful, professional UI/UX refresh with real resume download
+<<<<<<< .mine
+
+=======
+ * + Hero image (replaces the old blue rectangle)
+>>>>>>> .theirs
  */
 export default function PortfolioApp() {
   // ---------------- THEME ----------------
@@ -126,6 +131,7 @@ export default function PortfolioApp() {
           maxWidth: 1100, margin: "0 auto", padding: "10px 20px",
           display: "flex", alignItems: "center", justifyContent: "space-between"
         }}>
+<<<<<<< .mine
           <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
             <div style={{
               width: 34, height: 34, borderRadius: 10,
@@ -134,6 +140,16 @@ export default function PortfolioApp() {
             }} />
             <strong style={{ fontSize: 16 }}>Manasapujha G. R.</strong>
           </div>
+=======
+          <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
+            <strong style={{ fontSize: 16 }}>Manasapujha G. R.</strong>
+          </div>
+
+
+
+
+
+>>>>>>> .theirs
           <div style={{ display: "flex", gap: 8 }}>
             {linkWrap("#skills", "Skills")}
             {linkWrap("#projects", "Projects")}
@@ -168,6 +184,27 @@ export default function PortfolioApp() {
 
   // ---------------- SECTIONS ----------------
   function Hero() {
+<<<<<<< .mine
+
+
+
+
+
+
+
+
+
+=======
+    const imgStyle = {
+      width: 180,
+      height: 180,
+      borderRadius: "50%",
+      objectFit: "cover",
+      boxShadow: "0 10px 24px rgba(2,6,23,.18)",
+      border: border("#e2e8f0"),
+    };
+
+>>>>>>> .theirs
     return (
       <div style={{ maxWidth: 1100, margin: "0 auto", padding: "60px 20px" }}>
         <div style={{ display: "grid", gap: 16, alignItems: "center", gridTemplateColumns: "1.1fr .9fr" }}>
@@ -205,12 +242,21 @@ export default function PortfolioApp() {
               </a>
             </div>
           </div>
+<<<<<<< .mine
           <div>
             <div style={{
               height: 180, borderRadius: 18,
               background: `linear-gradient(135deg, ${THEME.gradientA}, ${THEME.gradientB})`,
               boxShadow: shadow, border: border("#e2e8f0"),
             }} />
+=======
+
+          {/* Profile image replaces the previous blue rectangle */}
+          <img src="/images/profile.jpg" alt="Manasapujha G. R." style={imgStyle} />
+
+
+
+>>>>>>> .theirs
           </div>
         </div>
       </div>
