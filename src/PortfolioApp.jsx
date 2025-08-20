@@ -418,7 +418,7 @@ export default function PortfolioApp() {
       return certifications.filter(c => testFn(c) && !seen.has(c.title)).map(c => { seen.add(c.title); return c; });
     }
 
-    const grouped = groups.map(g => ({ name: g.name, items: groupItems(g.test) })).filter(g => g.items.length > 0);
+    const grouped1 = groups.map(g => ({ name: g.name, items: groupItems(g.test) })).filter(g => g.items.length > 0);
 
     function CardItem({ cert }) {
       const [hover, setHover] = React.useState(false);
@@ -450,7 +450,7 @@ export default function PortfolioApp() {
 
     return (
       <Section id="certifications" title="Certifications" subtitle="Organized for quick scanning">
-        {grouped.map((g, gi) => (
+        {grouped1.map((g, gi) => (
           <div key={gi} style={{ marginTop: gi === 0 ? 0 : 8 }}>
             {gi > 0 && <div style={divider} />}
             <div style={groupTitle}>{g.name}</div>
@@ -466,11 +466,11 @@ export default function PortfolioApp() {
   }
 
 
-    const grouped = groups.map(g => ({ name: g.name, items: groupItems(g.test) })).filter(g => g.items.length > 0);
+    const grouped2 = groups.map(g => ({ name: g.name, items: groupItems(g.test) })).filter(g => g.items.length > 0);
 
     return (
       <Section id="certifications" title="Certifications" subtitle="Organized for quick scanning">
-        {grouped.map((g, gi) => (
+        {grouped2.map((g, gi) => (
           <div key={gi} style={{ marginTop: gi === 0 ? 0 : 8 }}>
             {gi > 0 && <div style={divider} />}
             <div style={groupTitle}>{g.name}</div>
@@ -510,11 +510,11 @@ export default function PortfolioApp() {
   }
 
 
-    const grouped = groups.map(g => ({ name: g.name, items: groupItems(g.test) })).filter(g => g.items.length > 0);
+    const grouped3 = groups.map(g => ({ name: g.name, items: groupItems(g.test) })).filter(g => g.items.length > 0);
 
     return (
       <Section id="certifications" title="Certifications" subtitle="Organized for quick scanning">
-        {grouped.map((g, gi) => (
+        {grouped3.map((g, gi) => (
           <div key={gi} style={{ marginTop: gi === 0 ? 0 : 8 }}>
             {gi > 0 && <div style={divider} />}
             <div style={groupTitle}>{g.name}</div>
@@ -538,14 +538,13 @@ export default function PortfolioApp() {
         ))}
       </Section>
     );
-  }
 
 
-    const grouped = groups.map(g => ({ name: g.name, items: groupItems(g.test) })).filter(g => g.items.length > 0);
+    const grouped4 = groups.map(g => ({ name: g.name, items: groupItems(g.test) })).filter(g => g.items.length > 0);
 
     return (
       <Section id="certifications" title="Certifications" subtitle="Organized for quick scanning">
-        {grouped.map((g, gi) => (
+        {grouped4.map((g, gi) => (
           <div key={gi} style={{ marginTop: gi === 0 ? 0 : 8 }}>
             <div style={groupTitle}>{g.name}</div>
             <div style={grid}>
@@ -571,11 +570,11 @@ export default function PortfolioApp() {
   }
 
 
-    const grouped = groups.map(g => ({ name: g.name, items: groupItems(g.test) })).filter(g => g.items.length > 0);
+    const grouped5 = groups.map(g => ({ name: g.name, items: groupItems(g.test) })).filter(g => g.items.length > 0);
 
     return (
       <Section id="certifications" title="Certifications" subtitle="Organized for quick scanning">
-        {grouped.map((g, gi) => (
+        {grouped5.map((g, gi) => (
           <div key={gi} style={{ marginTop: gi === 0 ? 0 : 8 }}>
             <div style={groupTitle}>{g.name}</div>
             <div style={grid}>
