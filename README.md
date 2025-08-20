@@ -1,19 +1,25 @@
-# Manasapujha G. R. — Portfolio (Vite + React)
+# Manasapujha Portfolio (Vite + React)
 
-## Quick Start
+## Quickstart
 ```bash
-npm install
+npm i
 npm run dev
-# open the printed local URL (e.g., http://localhost:5173)
+# open http://localhost:5173
 ```
 
-## Production Build
+## Build
 ```bash
 npm run build
 npm run preview
 ```
 
-## Notes
-- The Resume button downloads `public/Manasapujha_Resume.pdf`.
-- Replace the placeholder logos in `public/logos/` with real images when ready.
-- Contact form uses Formspree; set your form endpoint in `src/PortfolioApp.jsx`.
+## Deploy to Vercel
+- Framework preset: **Vite**
+- Build command: `npm run build`
+- Output directory: `dist`
+- Install command: `npm i`
+
+## Assets
+- Replace `public/Manasapujha_Resume.pdf` with your real resume.
+- Replace `public/profile.jpg` and `public/images/profile.jpg` with your photo (both kept to match code).
+- Logos live in `public/logos/`.
