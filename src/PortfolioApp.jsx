@@ -104,7 +104,7 @@ export default function PortfolioApp() {
     const [activeId, setActiveId] = React.useState("");
 
     React.useEffect(() => {
-      const sectionIds = ["skills", "projects", "certifications", "contact"];
+      const sectionIds = ["skills", "projects", "certifications"];
       const sections = sectionIds
         .map(id => document.getElementById(id))
         .filter(Boolean);
@@ -197,7 +197,6 @@ export default function PortfolioApp() {
             <NavLink href="#skills" label="Skills" />
             <NavLink href="#projects" label="Projects" />
             <NavLink href="#certifications" label="Certifications" />
-            <NavLink href="#contact" label="Contact" />
             {/* Navbar Resume styled like a plain link but still downloads */}
             <NavLink
               href="/Manasapujha_Resume.pdf"
@@ -449,90 +448,14 @@ export default function PortfolioApp() {
       </Section>
     );
   }
-
-
-
-  function Contact() {
-    const [formData, setFormData] = useState({ name: "", email: "", message: "" });
-    const [status, setStatus] = useState("");
-
-    const card = { background: THEME.card, border: border(), borderRadius: 16, padding: 18, boxShadow: shadow };
-    const input = { padding: 12, borderRadius: 10, border: border("#d1d5db"), outline: "none" };
-
-    async function handleSubmit(e) {
-      e.preventDefault();
-      setStatus("Sending...");
-      try {
-        const res = await fetch("https://formspree.io/f/your-form-id", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(formData),
-        });
-        if (res.ok) {
-          setStatus("Message sent successfully!");
-          setFormData({ name: "", email: "", message: "" });
-        } else {
-          setStatus("Oops! Something went wrong.");
-        }
-      } catch (err) {
-        setStatus("Failed to send. Please try again later.");
-      }
-    }
-
-    return (
-      <Section id="contact" title="Contact" subtitle="Say hello or request my full project portfolio">
-        <form onSubmit={handleSubmit} style={card}>
-          <div style={{ display: "grid", gap: 12 }}>
-            <input
-              type="text"
-              name="name"
-              placeholder="Your Name"
-              value={formData.name}
-              onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-              required
-              style={input}
-              onFocus={(e)=> e.currentTarget.style.boxShadow = `0 0 0 4px ${THEME.ring}55`}
-              onBlur={(e)=> e.currentTarget.style.boxShadow = "none"}
-            />
-            <input
-              type="email"
-              name="email"
-              placeholder="Your Email"
-              value={formData.email}
-              onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-              required
-              style={input}
-              onFocus={(e)=> e.currentTarget.style.boxShadow = `0 0 0 4px ${THEME.ring}55`}
-              onBlur={(e)=> e.currentTarget.style.boxShadow = "none"}
-            />
-            <textarea
-              name="message"
-              placeholder="Your Message"
-              value={formData.message}
-              onChange={(e) => setFormData({ ...formData, message: e.target.value })}
-              required
-              rows={5}
-              style={{ ...input, resize: "vertical" }}
-              onFocus={(e)=> e.currentTarget.style.boxShadow = `0 0 0 4px ${THEME.ring}55`}
-              onBlur={(e)=> e.currentTarget.style.boxShadow = "none"}
-            />
-            <button type="submit" style={{ background: THEME.primary, color: "white", padding: "10px 14px", borderRadius: 10, border: 0, cursor: "pointer" }}>
-              Send Message
-            </button>
-            {status && <p style={{ color: "#6b7280", fontSize: 14 }}>{status}</p>}
-          </div>
-        </form>
-      </Section>
-    );
-  }
-
+  // ---------------- PAGE ----------------
   // ---------------- PAGE ----------------
   return (
     <Shell>
       <Skills />
       <Projects />
       <Certifications />
-      <Contact />
+      
     </Shell>
   );
 }
