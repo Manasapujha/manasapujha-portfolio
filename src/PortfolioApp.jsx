@@ -1,8 +1,9 @@
 import React, { useEffect, useState } from "react";
 
 /**
- * Portfolio (grouped certifications, NO icons)
- * - Removes any logo/fallback icons next to certifications
+ * Portfolio (WhatsApp "Discuss" deep-link)
+ * - "Discuss →" opens WhatsApp to +91 98802 84129 with a prefilled message containing the project name
+ * - Certifications grouped, NO icons
  * - Robust resume download (public URLs only)
  * - IntersectionObserver rootMargin units fixed
  */
@@ -62,6 +63,15 @@ export default function PortfolioApp() {
     { title: "What is Data Science?", provider: "Coursera" },
     { title: "nasscom Women Wizards Rule Tech (WWRT) Cohort 5 - Foundation Course", provider: "NASSCOM" },
   ];
+
+  // ---------------- WHATSAPP HELPERS ----------------
+  const WHATSAPP_NUMBER = "919880284129"; // E.164 without '+' for wa.me
+
+  function buildWhatsAppLink(projectName) {
+    const msg = `Hello, I came across the project ${projectName} in your portfolio. Would like to collaborate and discuss further`;
+    // wa.me works on mobile + redirects to web.whatsapp.com on desktop
+    return `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(msg)}`;
+  }
 
   // ---------------- RESUME DOWNLOAD (public/ + BASE_URL only) ----------------
   const baseUrl = (typeof import.meta !== "undefined" && import.meta.env && import.meta.env.BASE_URL) || "/";
@@ -323,13 +333,26 @@ export default function PortfolioApp() {
     return (
       <Section id="projects" title="Projects" subtitle="Selected work across healthcare IT and environment management">
         <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(260px, 1fr))", gap: isMD ? 14 : 16 }}>
-          {projects.map((p, i) => (
-            <article key={i} style={{ background: THEME.card, border: border(), borderRadius: 16, padding: isMD ? 16 : 18, boxShadow: shadow }}>
-              <h3 style={{ fontWeight: 800, fontSize: isMD ? 17 : 18, margin: 0 }}>{p.title}</h3>
-              <p style={{ color: THEME.textMuted, lineHeight: 1.6, margin: "8px 0 12px", fontSize: isMD ? 14 : 15 }}>{p.description}</p>
-              <div><a href="#contact" style={{ color: THEME.primaryDark, textDecoration: "none", fontWeight: 600 }}>Discuss →</a></div>
-            </article>
-          ))}
+          {projects.map((p, i) => {
+            const waLink = buildWhatsAppLink(p.title);
+            return (
+              <article key={i} style={{ background: THEME.card, border: border(), borderRadius: 16, padding: isMD ? 16 : 18, boxShadow: shadow }}>
+                <h3 style={{ fontWeight: 800, fontSize: isMD ? 17 : 18, margin: 0 }}>{p.title}</h3>
+                <p style={{ color: THEME.textMuted, lineHeight: 1.6, margin: "8px 0 12px", fontSize: isMD ? 14 : 15 }}>{p.description}</p>
+                <div>
+                  <a
+                    href={waLink}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    aria-label={`Discuss ${p.title} on WhatsApp`}
+                    style={{ color: THEME.primaryDark, textDecoration: "none", fontWeight: 600 }}
+                  >
+                    Discuss →
+                  </a>
+                </div>
+              </article>
+            );
+          })}
         </div>
       </Section>
     );
