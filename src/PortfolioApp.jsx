@@ -1,10 +1,14 @@
 import React, { useEffect, useState } from "react";
 
 /**
- * Colorful, professional UI/UX refresh with real resume download
- * + Hero image (replaces the old blue rectangle)
- * + Update: "View Projects" uses outlined style like "Download Resume"
- * + Update: Navbar "Resume" is a plain text link (like "Contact") while still downloading the file
+ * Responsive refinements for mobile & laptop
+ * - Fluid layout that adapts at 480/768/1024px breakpoints
+ * - Stacks Hero on small screens, resizes avatar/text
+ * - Nav wraps on small screens and keeps tap-friendly spacing
+ * - Section paddings/typography scale by viewport width
+ *
+ * NOTE: Ensure your host HTML includes:
+ * <meta name="viewport" content="width=device-width, initial-scale=1" />
  */
 export default function PortfolioApp() {
   // ---------------- THEME ----------------
@@ -24,6 +28,22 @@ export default function PortfolioApp() {
   };
   const border = (c = THEME.border) => `1px solid ${c}`;
   const shadow = "0 10px 25px rgba(2, 6, 23, .08)";
+
+  // ---------------- BREAKPOINTS ----------------
+  const BP = { sm: 480, md: 768, lg: 1024 };
+  function useViewport() {
+    const [width, setWidth] = useState(typeof window !== 'undefined' ? window.innerWidth : 1200);
+    useEffect(() => {
+      function onResize() { setWidth(window.innerWidth); }
+      window.addEventListener('resize', onResize, { passive: true });
+      return () => window.removeEventListener('resize', onResize);
+    }, []);
+    return { width };
+  }
+  const { width } = useViewport();
+  const isSM = width < BP.sm;
+  const isMD = width < BP.md;
+  const isLG = width < BP.lg;
 
   // ---------------- DATA ----------------
   const skills = [
@@ -55,14 +75,14 @@ export default function PortfolioApp() {
   ];
 
   const certifications = [
-  { title: "Amazon Web Services Cloud Practitioner", logo: "/logos/aws.png" },
-  { title: "Prompt Engineering for ChatGPT", logo: "/logos/coursera.png" },
-  { title: "Python for Data Science and AI", logo: "/logos/coursera.png" },
-  { title: "Data Science Methodology", logo: "/logos/coursera.png" },
-  { title: "Open Source Tools for Data Science", logo: "/logos/coursera.png" },
-  { title: "What is Data Science?", logo: "/logos/coursera.png" },
-  { title: "nasscom Women Wizards Rule Tech (WWRT) Cohort 5 - Foundation Course", logo: "/logos/nasscom.png" }
-];
+    { title: "Amazon Web Services Cloud Practitioner", logo: "/logos/aws.png" },
+    { title: "Prompt Engineering for ChatGPT", logo: "/logos/coursera.png" },
+    { title: "Python for Data Science and AI", logo: "/logos/coursera.png" },
+    { title: "Data Science Methodology", logo: "/logos/coursera.png" },
+    { title: "Open Source Tools for Data Science", logo: "/logos/coursera.png" },
+    { title: "What is Data Science?", logo: "/logos/coursera.png" },
+    { title: "nasscom Women Wizards Rule Tech (WWRT) Cohort 5 - Foundation Course", logo: "/logos/nasscom.png" }
+  ];
 
   // -------- Runtime checks --------
   useEffect(() => {
@@ -86,20 +106,23 @@ export default function PortfolioApp() {
         }}>
           <Hero />
         </header>
-        <main style={{ maxWidth: 1100, margin: "0 auto", padding: "32px 20px 64px" }}>{children}</main>
-        <footer style={{ textAlign: "center", padding: 20, borderTop: border(), color: THEME.textMuted }}>
+        <main style={{
+          maxWidth: isLG ? 1000 : 1100,
+          margin: "0 auto",
+          padding: isMD ? "24px 16px 56px" : "32px 20px 64px",
+        }}>{children}</main>
+        <footer style={{
+          textAlign: "center",
+          padding: isMD ? 16 : 20,
+          borderTop: border(),
+          color: THEME.textMuted
+        }}>
           © 2025 Manasapujha G. R.
         </footer>
       </div>
     );
   }
 
-  
-  
-  
-  
-  
-  
   function Nav() {
     const [activeId, setActiveId] = React.useState("");
 
@@ -117,7 +140,6 @@ export default function PortfolioApp() {
           if (visible.length > 0) {
             setActiveId(visible[0].target.id);
           } else {
-            // Fallback: find the section closest to top
             let minTop = Infinity, closestId = activeId;
             sections.forEach(sec => {
               const top = Math.abs(sec.getBoundingClientRect().top);
@@ -141,12 +163,12 @@ export default function PortfolioApp() {
       const style = {
         color: THEME.text,
         textDecoration: "none",
-        padding: "8px 12px",
+        padding: isSM ? "8px 10px" : "8px 12px",
         borderRadius: 9999,
         transition: "background .15s ease, transform .15s ease, box-shadow .15s ease",
         background: isActive ? THEME.soft : (hover ? THEME.soft : "transparent"),
-        transform: hover ? "translateY(-2px)" : "none",
-        boxShadow: (isActive || hover) ? "0 8px 16px rgba(2,6,23,.10)" : "none",
+        transform: hover && !isSM ? "translateY(-2px)" : "none",
+        boxShadow: (isActive || (hover && !isSM)) ? "0 8px 16px rgba(2,6,23,.10)" : "none",
         fontWeight: isActive ? 700 : 500,
         display: "inline-block"
       };
@@ -157,7 +179,6 @@ export default function PortfolioApp() {
           const el = document.getElementById(targetId);
           if (el) {
             el.scrollIntoView({ behavior: "smooth", block: "start" });
-            // Update hash without jump
             history.replaceState(null, "", "#" + targetId);
           }
         }
@@ -184,20 +205,21 @@ export default function PortfolioApp() {
         top: 0,
         zIndex: 40,
         backdropFilter: "saturate(180%) blur(8px)",
-        background: "rgba(255,255,255,.8)",
+        background: "rgba(255,255,255,.85)",
         borderBottom: border("#e2e8f0"),
       }}>
         <div style={{
-          maxWidth: 1100, margin: "0 auto", padding: "10px 20px",
-          display: "flex", alignItems: "center", justifyContent: "space-between"
+          maxWidth: 1100, margin: "0 auto",
+          padding: isSM ? "8px 12px" : "10px 20px",
+          display: "flex", alignItems: "center", justifyContent: "space-between",
+          gap: 8, flexWrap: isMD ? "wrap" : "nowrap"
         }}>
-          {/* Left placeholder (brand removed as requested) */}
           <div />
-          <div style={{ display: "flex", gap: 8 }}>
+          <div style={{ display: "flex", gap: isSM ? 6 : 8, flexWrap: "wrap" }}>
             <NavLink href="#skills" label="Skills" />
             <NavLink href="#projects" label="Projects" />
             <NavLink href="#certifications" label="Certifications" />
-            {/* Navbar Resume styled like a plain link but still downloads */}
+            {/* Resume download in navbar */}
             <NavLink
               href="/Manasapujha_Resume.pdf"
               label="Resume"
@@ -210,13 +232,12 @@ export default function PortfolioApp() {
     );
   }
 
-
   function Section({ id, title, subtitle, children }) {
     return (
-      <section id={id} style={{ marginTop: 42 }}>
+      <section id={id} style={{ marginTop: isMD ? 32 : 42 }}>
         <div style={{ marginBottom: 16 }}>
-          <h2 style={{ fontSize: 26, fontWeight: 800, margin: 0 }}>{title}</h2>
-          {subtitle && <p style={{ margin: "6px 0 0", color: THEME.textMuted }}>{subtitle}</p>}
+          <h2 style={{ fontSize: isMD ? 22 : 26, fontWeight: 800, margin: 0 }}>{title}</h2>
+          {subtitle && <p style={{ margin: "6px 0 0", color: THEME.textMuted, fontSize: isMD ? 14 : 16 }}>{subtitle}</p>}
         </div>
         {children}
       </section>
@@ -224,15 +245,16 @@ export default function PortfolioApp() {
   }
 
   // ---------------- SECTIONS ----------------
-  
   function Hero() {
+    const imgSize = isMD ? (isSM ? 110 : 140) : 180;
     const imgStyle = {
-      width: 180,
-      height: 180,
+      width: imgSize,
+      height: imgSize,
       borderRadius: "50%",
       objectFit: "cover",
       boxShadow: "0 10px 24px rgba(2,6,23,.18)",
       border: border("#e2e8f0"),
+      margin: isMD ? "0 auto" : 0,
     };
 
     function HeroButton({ href, label, download }) {
@@ -241,12 +263,12 @@ export default function PortfolioApp() {
         background: hover ? "#ffffff" : THEME.soft,
         color: THEME.text,
         textDecoration: "none",
-        padding: "10px 14px",
+        padding: isSM ? "9px 12px" : "10px 14px",
         borderRadius: 10,
         border: border(),
         transition: "background .15s ease, transform .15s ease, box-shadow .15s ease",
-        transform: hover ? "translateY(-2px)" : "none",
-        boxShadow: hover ? "0 8px 16px rgba(2,6,23,.12)" : "none",
+        transform: hover && !isSM ? "translateY(-2px)" : "none",
+        boxShadow: hover && !isSM ? "0 8px 16px rgba(2,6,23,.12)" : "none",
       };
       return (
         <a
@@ -262,8 +284,14 @@ export default function PortfolioApp() {
     }
 
     return (
-      <div style={{ maxWidth: 1100, margin: "0 auto", padding: "60px 20px" }}>
-        <div style={{ display: "grid", gap: 24, alignItems: "center", gridTemplateColumns: "1fr auto" }}>
+      <div style={{ maxWidth: isLG ? 1000 : 1100, margin: "0 auto", padding: isMD ? "36px 16px 20px" : "60px 20px" }}>
+        <div style={{
+          display: "grid",
+          gap: isMD ? 18 : 24,
+          alignItems: "center",
+          gridTemplateColumns: isMD ? "1fr" : "1fr auto",
+          textAlign: isMD ? "center" : "left"
+        }}>
           <div>
             <div style={{
               display: "inline-flex", gap: 8, alignItems: "center",
@@ -271,19 +299,24 @@ export default function PortfolioApp() {
               border: border("#e2e8f0")
             }}>
               <span style={{ width: 8, height: 8, borderRadius: 9999, background: THEME.primary }} />
-              <span style={{ fontSize: 12, color: THEME.text }}>
+              <span style={{ fontSize: isMD ? 11 : 12, color: THEME.text }}>
                 Software Development Engineer Senior · CSG Systems International (India)
               </span>
             </div>
-            <h1 style={{ fontSize: 40, lineHeight: 1.15, margin: "16px 0 8px" }}>
+            <h1 style={{ fontSize: isMD ? (isSM ? 28 : 32) : 40, lineHeight: 1.2, margin: "16px 0 8px" }}>
               Manasapujha G. R.
             </h1>
-            <p style={{ color: THEME.textMuted, fontSize: 16, margin: 0 }}>
+            <p style={{ color: THEME.textMuted, fontSize: isMD ? 14 : 16, margin: 0 }}>
               Full-Stack Developer · Healthcare & Telecom · AWS
             </p>
-            <div style={{ display: "flex", gap: 12, marginTop: 18 }}>
+            <div style={{ display: "flex", gap: 12, marginTop: 18, justifyContent: isMD ? "center" : "flex-start", flexWrap: "wrap" }}>
               <HeroButton href="#projects" label="View Projects" />
-              <HeroButton href="/Manasapujha_Resume.pdf" label="Download Resume" download="Manasapujha_G_R_Resume.pdf" />
+              {/* Resume download in hero */}
+              <HeroButton
+                href="/Manasapujha_Resume.pdf"
+                label="Download Resume"
+                download="Manasapujha_G_R_Resume.pdf"
+              />
             </div>
           </div>
           <img src="/images/profile.jpg" alt="Manasapujha G. R." style={imgStyle} />
@@ -292,21 +325,19 @@ export default function PortfolioApp() {
     );
   }
 
-
-  
   function Skills() {
     function SkillChip({ label, color }) {
       const [hover, setHover] = React.useState(false);
       const style = {
-        fontSize: 13,
-        padding: "8px 12px",
+        fontSize: isSM ? 12 : 13,
+        padding: isSM ? "7px 10px" : "8px 12px",
         borderRadius: 9999,
         color: THEME.text,
         background: hover ? color + "44" : color + "22",
         border: border(hover ? color : color + "55"),
         transition: "background .2s ease, transform .15s ease, box-shadow .15s ease",
-        transform: hover ? "translateY(-2px)" : "none",
-        boxShadow: hover ? "0 6px 12px rgba(2,6,23,.12)" : "none",
+        transform: hover && !isSM ? "translateY(-2px)" : "none",
+        boxShadow: hover && !isSM ? "0 6px 12px rgba(2,6,23,.12)" : "none",
         cursor: "default",
       };
       return (
@@ -322,7 +353,7 @@ export default function PortfolioApp() {
 
     return (
       <Section id="skills" title="Skills" subtitle="Languages, platforms & tooling I use to ship reliably">
-        <div style={{ display: "flex", flexWrap: "wrap", gap: 10 }}>
+        <div style={{ display: "flex", flexWrap: "wrap", gap: isSM ? 8 : 10 }}>
           {skills.map((s, i) => (
             <SkillChip key={i} label={s} color={THEME.chipPalette[i % THEME.chipPalette.length]} />
           ))}
@@ -331,24 +362,22 @@ export default function PortfolioApp() {
     );
   }
 
-
-  
   function Projects() {
     const baseCard = {
-      background: THEME.card, border: border(), borderRadius: 16, padding: 18, boxShadow: shadow,
+      background: THEME.card, border: border(), borderRadius: 16, padding: isMD ? 16 : 18, boxShadow: shadow,
       position: "relative", overflow: "hidden",
       transition: "transform .15s ease, box-shadow .15s ease, background .2s ease",
     };
-    const title = { fontWeight: 800, fontSize: 18, margin: 0 };
-    const text = { color: THEME.textMuted, lineHeight: 1.6, margin: "8px 0 12px" };
+    const title = { fontWeight: 800, fontSize: isMD ? 17 : 18, margin: 0 };
+    const text = { color: THEME.textMuted, lineHeight: 1.6, margin: "8px 0 12px", fontSize: isMD ? 14 : 15 };
 
     function ProjectCard({ project }) {
       const [hover, setHover] = React.useState(false);
       const style = {
         ...baseCard,
-        transform: hover ? "translateY(-2px)" : "none",
-        boxShadow: hover ? "0 14px 30px rgba(2,6,23,.12)" : shadow,
-        background: hover ? "#f9fafb" : THEME.card,
+        transform: hover && !isSM ? "translateY(-2px)" : "none",
+        boxShadow: hover && !isSM ? "0 14px 30px rgba(2,6,23,.12)" : shadow,
+        background: hover && !isSM ? "#f9fafb" : THEME.card,
       };
       return (
         <article
@@ -370,7 +399,7 @@ export default function PortfolioApp() {
 
     return (
       <Section id="projects" title="Projects" subtitle="Selected work across healthcare IT and environment management">
-        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(280px, 1fr))", gap: 16 }}>
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(260px, 1fr))", gap: isMD ? 14 : 16 }}>
           {projects.map((p, i) => (
             <ProjectCard key={i} project={p} />
           ))}
@@ -380,15 +409,14 @@ export default function PortfolioApp() {
   }
 
   function Certifications() {
-    const grid = { display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(260px, 1fr))", gap: 16 };
+    const grid = { display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(240px, 1fr))", gap: isMD ? 14 : 16 };
     const baseCard = {
       display: "flex", alignItems: "center", gap: 12,
-      background: THEME.card, border: border(), borderRadius: 14, padding: 14, boxShadow: shadow,
+      background: THEME.card, border: border(), borderRadius: 14, padding: isMD ? 12 : 14, boxShadow: shadow,
       transition: "transform .15s ease, box-shadow .15s ease, background .2s ease",
     };
-    const logo = { width: 40, height: 40, borderRadius: 10, objectFit: "contain", background: THEME.soft, border: border("#e2e8f0") };
-    const groupTitle = { fontSize: 14, fontWeight: 800, color: THEME.textMuted, margin: "18px 0 8px" };
-    const divider = { borderTop: border("#e5e7eb"), margin: "20px 0" };
+    const groupTitle = { fontSize: isMD ? 13 : 14, fontWeight: 800, color: THEME.textMuted, margin: "18px 0 8px" };
+    const divider = { borderTop: border("#e5e7eb"), margin: isMD ? "16px 0" : "20px 0" };
 
     const groups = [
       { name: "🎯 Core Certifications", test: (c) => c.title === "Amazon Web Services Cloud Practitioner" || c.title === "Prompt Engineering for ChatGPT" },
@@ -408,9 +436,9 @@ export default function PortfolioApp() {
       const [hover, setHover] = React.useState(false);
       const style = {
         ...baseCard,
-        transform: hover ? "translateY(-2px)" : "none",
-        boxShadow: hover ? "0 14px 30px rgba(2,6,23,.12)" : shadow,
-        background: hover ? "#f9fafb" : THEME.card,
+        transform: hover && !isSM ? "translateY(-2px)" : "none",
+        boxShadow: hover && !isSM ? "0 14px 30px rgba(2,6,23,.12)" : shadow,
+        background: hover && !isSM ? "#f9fafb" : THEME.card,
       };
       return (
         <div
@@ -418,14 +446,13 @@ export default function PortfolioApp() {
           onMouseEnter={() => setHover(true)}
           onMouseLeave={() => setHover(false)}
         >
-          
           <div>
             {cert.url ? (
-              <a href={cert.url} target="_blank" rel="noreferrer" style={{ color: THEME.primary, fontWeight: 700, textDecoration: "none" }}>
+              <a href={cert.url} target="_blank" rel="noreferrer" style={{ color: THEME.primary, fontWeight: 700, textDecoration: "none", fontSize: isMD ? 14 : 15 }}>
                 {cert.title}
               </a>
             ) : (
-              <span style={{ fontWeight: 700 }}>{cert.title}</span>
+              <span style={{ fontWeight: 700, fontSize: isMD ? 14 : 15 }}>{cert.title}</span>
             )}
           </div>
         </div>
@@ -448,14 +475,13 @@ export default function PortfolioApp() {
       </Section>
     );
   }
-  // ---------------- PAGE ----------------
+
   // ---------------- PAGE ----------------
   return (
     <Shell>
       <Skills />
       <Projects />
       <Certifications />
-      
     </Shell>
   );
 }
