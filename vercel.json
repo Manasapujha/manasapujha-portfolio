@@ -1,17 +1,10 @@
 {
-  "rewrites": [
-    {
-      "source": "/(.*)",
-      "destination": "/index.html",
-      "missing": [{ "type": "file" }]
-    }
-  ],
   "headers": [
     {
       "source": "/Manasapujha_Resume.pdf",
       "headers": [
-        { "key": "Content-Disposition", "value": "attachment; filename=\\"Manasapujha_G_R_Resume.pdf\\"" },
-        { "key": "Cache-Control", "value": "public, max-age=0, must-revalidate" }
+        { "key": "Cache-Control", "value": "public, max-age=0, must-revalidate" },
+        { "key": "Content-Disposition", "value": "attachment; filename=\"Manasapujha_G_R_Resume.pdf\"" }
       ]
     }
   ]
