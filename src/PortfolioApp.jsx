@@ -219,6 +219,7 @@ export default function PortfolioApp() {
             <NavLink href="#skills" label="Skills" />
             <NavLink href="#projects" label="Projects" />
             <NavLink href="#certifications" label="Certifications" />
+            {/* Resume download in navbar */}
             <NavLink
               href="/Manasapujha_Resume.pdf"
               label="Resume"
@@ -310,7 +311,12 @@ export default function PortfolioApp() {
             </p>
             <div style={{ display: "flex", gap: 12, marginTop: 18, justifyContent: isMD ? "center" : "flex-start", flexWrap: "wrap" }}>
               <HeroButton href="#projects" label="View Projects" />
-              <HeroButton href="/Manasapujha_Resume.pdf" label="Download Resume" download="Manasapujha_G_R_Resume.pdf" />
+              {/* Resume download in hero */}
+              <HeroButton
+                href="/Manasapujha_Resume.pdf"
+                label="Download Resume"
+                download="Manasapujha_G_R_Resume.pdf"
+              />
             </div>
           </div>
           <img src="/images/profile.jpg" alt="Manasapujha G. R." style={imgStyle} />
