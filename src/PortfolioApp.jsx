@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from "react";
 
 /**
- * Portfolio (WhatsApp "Discuss" deep-link)
- * - "Discuss →" opens WhatsApp to +91 98802 84129 with a prefilled message containing the project name
- * - Certifications grouped, NO icons
- * - Robust resume download (public URLs only)
+ * Portfolio (WhatsApp + grouped certs, NO icons)
+ * - FIX: Resume download verifies real PDF (Content-Type or "%PDF" signature) to prevent blank downloads
+ * - Uses cache-busting query to avoid stale cached HTML/0-byte artifacts
+ * - Keeps WhatsApp deep-link on "Discuss →"
  * - IntersectionObserver rootMargin units fixed
  */
 export default function PortfolioApp() {
@@ -66,55 +66,70 @@ export default function PortfolioApp() {
 
   // ---------------- WHATSAPP HELPERS ----------------
   const WHATSAPP_NUMBER = "919880284129"; // E.164 without '+' for wa.me
-
   function buildWhatsAppLink(projectName) {
     const msg = `Hello, I came across the project ${projectName} in your portfolio. Would like to collaborate and discuss further`;
-    // wa.me works on mobile + redirects to web.whatsapp.com on desktop
     return `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(msg)}`;
   }
 
-  // ---------------- RESUME DOWNLOAD (public/ + BASE_URL only) ----------------
+  // ---------------- RESUME DOWNLOAD (robust + PDF verification) ----------------
   const baseUrl = (typeof import.meta !== "undefined" && import.meta.env && import.meta.env.BASE_URL) || "/";
-  const RESUME_PATHS = [
+  const RESUME_CANDIDATES = [
     "/Manasapujha_Resume.pdf",
     `${baseUrl}Manasapujha_Resume.pdf`,
   ];
 
-  async function resolveFirstWorkingUrl(candidates) {
-    for (const url of candidates) {
+  function addNoCache(url) {
+    const sep = url.includes("?") ? "&" : "?";
+    return `${url}${sep}v=${Date.now()}`;
+  }
+
+  function looksLikePdf(buf, contentType) {
+    const ct = (contentType || "").toLowerCase();
+    if (ct.includes("application/pdf")) return true;
+    // Check magic bytes: "%PDF" -> 0x25 0x50 0x44 0x46
+    const view = new Uint8Array(buf.slice(0, 4));
+    return view.length >= 4 && view[0] === 0x25 && view[1] === 0x50 && view[2] === 0x44 && view[3] === 0x46;
+  }
+
+  async function downloadResume() {
+    const filename = "Manasapujha_G_R_Resume.pdf";
+    const errors = [];
+    for (const base of RESUME_CANDIDATES) {
+      const url = addNoCache(base);
       try {
-        const head = await fetch(url, { method: "HEAD", credentials: "same-origin" });
-        if (head.ok) return url;
-      } catch {}
+        const res = await fetch(url, { redirect: "follow" });
+        if (!res.ok) {
+          errors.push(`${url} -> HTTP ${res.status}`);
+          continue;
+        }
+        const buf = await res.arrayBuffer();
+        const ct = res.headers.get("content-type") || "";
+        if (!looksLikePdf(buf, ct) || buf.byteLength < 1024) { // <1KB is almost certainly wrong (HTML shell)
+          errors.push(`${url} -> not a PDF (ct=${ct}, size=${buf.byteLength})`);
+          continue;
+        }
+        const blob = new Blob([buf], { type: "application/pdf" });
+        const objectUrl = URL.createObjectURL(blob);
+        const a = document.createElement("a");
+        a.href = objectUrl;
+        a.download = filename;
+        document.body.appendChild(a);
+        a.click();
+        a.remove();
+        URL.revokeObjectURL(objectUrl);
+        return true;
+      } catch (e) {
+        errors.push(`${url} -> ${e?.message || e}`);
+      }
     }
-    return null;
+    console.error("[resume] All attempts failed:", errors);
+    alert("Couldn't download the resume from the expected paths. See console for details.\n" + errors.join("\n"));
+    return false;
   }
 
-  async function blobDownload(url, filename) {
-    const res = await fetch(url, { credentials: "same-origin" });
-    if (!res.ok) throw new Error(`GET ${url} => ${res.status}`);
-    const blob = await res.blob();
-    const objectUrl = URL.createObjectURL(blob);
-    const a = document.createElement("a");
-    a.href = objectUrl;
-    a.download = filename || "resume.pdf";
-    document.body.appendChild(a);
-    a.click();
-    a.remove();
-    URL.revokeObjectURL(objectUrl);
-  }
-
-  async function handleResumeDownload(e) {
+  function handleResumeDownload(e) {
     e.preventDefault();
-    try {
-      const working = await resolveFirstWorkingUrl(RESUME_PATHS);
-      if (!working) throw new Error("No working resume path found");
-      await blobDownload(working, "Manasapujha_G_R_Resume.pdf");
-    } catch (err) {
-      // Fallback: open in a new tab if download fails
-      const fallback = RESUME_PATHS[0];
-      window.open(fallback, "_blank", "noopener,noreferrer");
-    }
+    downloadResume();
   }
 
   // ---------------- LAYOUT ----------------
