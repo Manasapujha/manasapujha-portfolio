@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from "react";
 
 /**
- * Portfolio (grouped certifications with icons)
+ * Portfolio (grouped certifications, NO icons)
+ * - Removes any logo/fallback icons next to certifications
  * - Robust resume download (public URLs only)
  * - IntersectionObserver rootMargin units fixed
- * - Certifications grouped with icons (uses logos when available, falls back to SVG)
  */
 export default function PortfolioApp() {
   // ---------------- THEME ----------------
@@ -52,15 +52,15 @@ export default function PortfolioApp() {
     { title: "Cardiovascular Solution", description: "Automates cardiology workflows, improves cardiac disease management, and streamlines diagnostic imaging operations." },
   ];
 
-  // Full certifications list (logos expected under /public/logos/*.png). Fallback icon shown if missing.
+  // Certifications — grouped later, but NO icons are rendered.
   const certifications = [
-    { title: "Amazon Web Services Cloud Practitioner", provider: "AWS", logo: "/logos/aws.png" },
-    { title: "Prompt Engineering for ChatGPT", provider: "Coursera", logo: "/logos/coursera.png" },
-    { title: "Python for Data Science and AI", provider: "Coursera", logo: "/logos/coursera.png" },
-    { title: "Data Science Methodology", provider: "Coursera", logo: "/logos/coursera.png" },
-    { title: "Open Source Tools for Data Science", provider: "Coursera", logo: "/logos/coursera.png" },
-    { title: "What is Data Science?", provider: "Coursera", logo: "/logos/coursera.png" },
-    { title: "nasscom Women Wizards Rule Tech (WWRT) Cohort 5 - Foundation Course", provider: "NASSCOM", logo: "/logos/nasscom.png" },
+    { title: "Amazon Web Services Cloud Practitioner", provider: "AWS" },
+    { title: "Prompt Engineering for ChatGPT", provider: "Coursera" },
+    { title: "Python for Data Science and AI", provider: "Coursera" },
+    { title: "Data Science Methodology", provider: "Coursera" },
+    { title: "Open Source Tools for Data Science", provider: "Coursera" },
+    { title: "What is Data Science?", provider: "Coursera" },
+    { title: "nasscom Women Wizards Rule Tech (WWRT) Cohort 5 - Foundation Course", provider: "NASSCOM" },
   ];
 
   // ---------------- RESUME DOWNLOAD (public/ + BASE_URL only) ----------------
@@ -253,7 +253,7 @@ export default function PortfolioApp() {
     );
   }
 
-  // --------------- CERTIFICATIONS (GROUPED WITH ICONS) ----------------
+  // --------------- CERTIFICATIONS (GROUPED, NO ICONS) ----------------
   function Certifications() {
     const grid = { display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(260px, 1fr))", gap: isMD ? 14 : 16 };
     const baseCard = {
@@ -264,10 +264,9 @@ export default function PortfolioApp() {
     const groupTitle = { fontSize: isMD ? 13 : 14, fontWeight: 800, color: THEME.textMuted, margin: "18px 0 8px" };
     const divider = { borderTop: border("#e5e7eb"), margin: isMD ? "16px 0" : "20px 0" };
 
-    // Define groups — ALL items will appear exactly once (deduped via 'seen')
     const groups = [
       { name: "🎯 Core Certifications", test: (c) => /cloud practitioner/i.test(c.title) || /prompt engineering/i.test(c.title) },
-      { name: "🎓 Coursera",            test: (c) => /coursera/i.test(c.provider || c.logo || "") },
+      { name: "🎓 Coursera",            test: (c) => /coursera/i.test(c.provider || "") },
       { name: "🏢 NASSCOM",             test: (c) => /nasscom/i.test(c.provider || c.title) },
       { name: "📚 Other",               test: (_) => true },
     ];
@@ -278,30 +277,6 @@ export default function PortfolioApp() {
         .map(c => { seen.add(c.title); return c; });
     }
     const grouped = groups.map(g => ({ name: g.name, items: groupItems(g.test) })).filter(g => g.items.length > 0);
-
-    function FallbackIcon() {
-      return (
-        <svg width={28} height={28} viewBox="0 0 24 24" fill="none" aria-hidden="true">
-          <rect x="3" y="3" width="18" height="18" rx="4" stroke="#94a3b8" strokeWidth="1.5" />
-          <path d="M8 12h8M8 16h8M8 8h5" stroke="#64748b" strokeWidth="1.5" strokeLinecap="round" />
-        </svg>
-      );
-    }
-
-    function CertIcon({ logo, alt }) {
-      const [showFallback, setShowFallback] = React.useState(false);
-      if (!logo || showFallback) return <FallbackIcon />;
-      return (
-        <img
-          src={logo}
-          alt={alt || ""}
-          width={28}
-          height={28}
-          style={{ objectFit: "contain", borderRadius: 6, background: "#ffffff" }}
-          onError={() => setShowFallback(true)}
-        />
-      );
-    }
 
     function CardItem({ cert }) {
       const [hover, setHover] = React.useState(false);
@@ -317,7 +292,6 @@ export default function PortfolioApp() {
           onMouseEnter={() => setHover(true)}
           onMouseLeave={() => setHover(false)}
         >
-          <CertIcon logo={cert.logo} alt={cert.provider} />
           <div style={{ display: "flex", flexDirection: "column" }}>
             <span style={{ fontWeight: 700, fontSize: isMD ? 14 : 15 }}>{cert.title}</span>
             {cert.provider && (
@@ -329,7 +303,7 @@ export default function PortfolioApp() {
     }
 
     return (
-      <Section id="certifications" title="Certifications" subtitle="Organized with provider icons for quick scanning">
+      <Section id="certifications" title="Certifications" subtitle="Organized for quick scanning">
         {grouped.map((g, gi) => (
           <div key={gi} style={{ marginTop: gi === 0 ? 0 : 8 }}>
             {gi > 0 && <div style={divider} />}
