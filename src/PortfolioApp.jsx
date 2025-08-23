@@ -1,16 +1,9 @@
 import React, { useEffect, useState } from "react";
-// Optional: if you move the PDF into src/assets/, Vite will bundle it and rewrite URL.
-let importedResumeUrl;
-try {
-  importedResumeUrl = new URL("./assets/Manasapujha_Resume.pdf", import.meta.url).href;
-} catch (_) {
-  importedResumeUrl = null;
-}
 
 /**
- * Responsive portfolio + robust resume download
- * - Tries multiple PDF paths (/, BASE_URL, imported asset)
- * - Blob download with fallback
+ * Responsive portfolio (safe version)
+ * - No import.meta/new URL asset usage
+ * - Robust resume download using public URL(s) only
  * - Shows ALL certifications
  */
 export default function PortfolioApp() {
@@ -59,7 +52,6 @@ export default function PortfolioApp() {
     { title: "Cardiovascular Solution", description: "Automates cardiology workflows, improves cardiac disease management, and streamlines diagnostic imaging operations." },
   ];
 
-  // Your full certifications list — ALL will be displayed
   const certifications = [
     { title: "Amazon Web Services Cloud Practitioner", logo: "/logos/aws.png" },
     { title: "Prompt Engineering for ChatGPT", logo: "/logos/coursera.png" },
@@ -70,55 +62,48 @@ export default function PortfolioApp() {
     { title: "nasscom Women Wizards Rule Tech (WWRT) Cohort 5 - Foundation Course", logo: "/logos/nasscom.png" }
   ];
 
-  // ---------------- RESUME DOWNLOAD (robust) ----------------
-  const CANDIDATE_RESUME_URLS = [
+  // ---------------- RESUME DOWNLOAD (public/ + BASE_URL only) ----------------
+  const baseUrl = (typeof import.meta !== "undefined" && import.meta.env && import.meta.env.BASE_URL) || "/";
+  const RESUME_PATHS = [
     "/Manasapujha_Resume.pdf",
-    `${(import.meta && import.meta.env && import.meta.env.BASE_URL) || "/"}Manasapujha_Resume.pdf`,
-    importedResumeUrl,
-  ].filter(Boolean);
+    `${baseUrl}Manasapujha_Resume.pdf`,
+  ];
 
   async function resolveFirstWorkingUrl(candidates) {
     for (const url of candidates) {
       try {
         const head = await fetch(url, { method: "HEAD", credentials: "same-origin" });
         if (head.ok) return url;
-      } catch (e) {
-        console.warn("[resume] HEAD failed for", url, e);
-      }
+      } catch {}
     }
     return null;
   }
 
-  async function forceDownload(url, filename) {
-    try {
-      const res = await fetch(url, { credentials: "same-origin" });
-      if (!res.ok) throw new Error(`GET ${url} => ${res.status}`);
-      const blob = await res.blob();
-      const objectUrl = URL.createObjectURL(blob);
-      const a = document.createElement("a");
-      a.href = objectUrl;
-      a.download = filename || "resume.pdf";
-      document.body.appendChild(a);
-      a.click();
-      a.remove();
-      URL.revokeObjectURL(objectUrl);
-      return true;
-    } catch (e) {
-      console.error("[resume] blob download failed", e);
-      return false;
-    }
+  async function blobDownload(url, filename) {
+    const res = await fetch(url, { credentials: "same-origin" });
+    if (!res.ok) throw new Error(`GET ${url} => ${res.status}`);
+    const blob = await res.blob();
+    const objectUrl = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = objectUrl;
+    a.download = filename || "resume.pdf";
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    URL.revokeObjectURL(objectUrl);
   }
 
   async function handleResumeDownload(e) {
     e.preventDefault();
-    const filename = "Manasapujha_G_R_Resume.pdf";
-    const working = await resolveFirstWorkingUrl(CANDIDATE_RESUME_URLS);
-    if (!working) {
-      alert("Sorry, I couldn't find the resume at the expected paths.\nPlease ensure the PDF is in /public or at src/assets/.");
-      return;
+    try {
+      const working = await resolveFirstWorkingUrl(RESUME_PATHS);
+      if (!working) throw new Error("No working resume path found");
+      await blobDownload(working, "Manasapujha_G_R_Resume.pdf");
+    } catch (err) {
+      // Fallback: open in a new tab if download fails
+      const fallback = RESUME_PATHS[0];
+      window.open(fallback, "_blank", "noopener,noreferrer");
     }
-    const ok = await forceDownload(working, filename);
-    if (!ok) window.open(working, "_blank", "noopener,noreferrer");
   }
 
   // ---------------- LAYOUT ----------------
@@ -146,7 +131,8 @@ export default function PortfolioApp() {
   function Nav({ onResumeClick }) {
     const [activeId, setActiveId] = React.useState("");
 
-    React.useEffect(() => {
+    useEffect(() => {
+      if (typeof window === "undefined" || !("IntersectionObserver" in window)) return;
       const ids = ["skills", "projects", "certifications"];
       const secs = ids.map((id) => document.getElementById(id)).filter(Boolean);
       const obs = new IntersectionObserver((entries) => {
@@ -178,7 +164,7 @@ export default function PortfolioApp() {
           e.preventDefault();
           const el = document.getElementById(targetId);
           if (el) el.scrollIntoView({ behavior: "smooth", block: "start" });
-          history.replaceState(null, "", "#" + targetId);
+          window.history.replaceState(null, "", "#" + targetId);
         }
       }
 
@@ -288,8 +274,6 @@ export default function PortfolioApp() {
         <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(240px, 1fr))", gap: isMD ? 14 : 16 }}>
           {certifications.map((c, i) => (
             <div key={i} style={{ display: "flex", alignItems: "center", gap: 12, background: THEME.card, border: border(), borderRadius: 14, padding: isMD ? 12 : 14, boxShadow: shadow }}>
-              {/* If you have logos, render an <img> here */}
-              {/* {c.logo && <img src={c.logo} alt="" width={28} height={28} style={{ objectFit: "contain" }} />} */}
               <span style={{ fontWeight: 700, fontSize: isMD ? 14 : 15 }}>{c.title}</span>
             </div>
           ))}
