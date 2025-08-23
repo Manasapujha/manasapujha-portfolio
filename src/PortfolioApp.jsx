@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 
 /**
  * Responsive portfolio (safe version)
- * - No import.meta/new URL asset usage
+ * - Fix: IntersectionObserver rootMargin uses explicit units ("-30% 0px -60% 0px")
  * - Robust resume download using public URL(s) only
  * - Shows ALL certifications
  */
@@ -138,7 +138,7 @@ export default function PortfolioApp() {
       const obs = new IntersectionObserver((entries) => {
         const vis = entries.filter((e) => e.isIntersecting).sort((a, b) => b.intersectionRatio - a.intersectionRatio);
         if (vis.length > 0) setActiveId(vis[0].target.id);
-      }, { rootMargin: "-30% 0 -60% 0", threshold: [0.1, 0.25, 0.5] });
+      }, { rootMargin: "-30% 0px -60% 0px", threshold: [0.1, 0.25, 0.5] });
       secs.forEach((s) => obs.observe(s));
       return () => obs.disconnect();
     }, []);
