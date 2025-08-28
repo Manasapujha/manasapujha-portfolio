@@ -566,19 +566,19 @@ export default function PortfolioApp() {
       {
         name: "LinkedIn",
         url: "https://www.linkedin.com/in/manasapujha-g-r-9971689",
-        icon: "💼",
+        icon: "/images/linkedin-logo.png",
         description: "Professional network and experience"
       },
       {
         name: "GitHub",
         url: "https://github.com/manasapujha",
-        icon: "🐙",
+        icon: "/images/github-logo.png",
         description: "Code repositories and projects"
       },
       {
         name: "WhatsApp",
         url: `https://wa.me/${WHATSAPP_NUMBER}`,
-        icon: "💬",
+        icon: "/images/whatsapp-logo.png",
         description: "Quick chat and collaboration"
       }
     ];
@@ -617,12 +617,20 @@ export default function PortfolioApp() {
                 e.target.style.background = THEME.card;
               }}
             >
-              <div style={{ display: "flex", alignItems: "center", gap: 16, marginBottom: 12 }}>
-                <span style={{ fontSize: 24 }}>{social.icon}</span>
-                <h3 style={{ fontSize: isMD ? 16 : 18, fontWeight: 700, margin: 0 }}>
-                  {social.name}
-                </h3>
-              </div>
+                          <div style={{ display: "flex", alignItems: "center", gap: 16, marginBottom: 12 }}>
+              <img 
+                src={social.icon} 
+                alt={`${social.name} logo`}
+                style={{ 
+                  width: 24, 
+                  height: 24, 
+                  objectFit: "contain" 
+                }}
+              />
+              <h3 style={{ fontSize: isMD ? 16 : 18, fontWeight: 700, margin: 0 }}>
+                {social.name}
+              </h3>
+            </div>
               <p style={{ 
                 color: THEME.textMuted, 
                 fontSize: isMD ? 13 : 14, 
