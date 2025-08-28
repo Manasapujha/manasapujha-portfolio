@@ -71,6 +71,8 @@ export default function PortfolioApp() {
     return `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(msg)}`;
   }
 
+  const RESUME_URL = "/Manasapujha_Resume.pdf";
+
   // ---------------- RESUME DOWNLOAD (robust + PDF verification) ----------------
   const baseUrl = (typeof import.meta !== "undefined" && import.meta.env && import.meta.env.BASE_URL) || "/";
   const RESUME_CANDIDATES = [
@@ -210,7 +212,15 @@ export default function PortfolioApp() {
             <NavLink href="#skills" label="Skills" />
             <NavLink href="#projects" label="Projects" />
             <NavLink href="#certifications" label="Certifications" />
-            <NavLink href="/Manasapujha_Resume.pdf" label="Resume" title="Download Resume" onClick={onResumeClick} />
+            <a
+              href={RESUME_URL}
+              download="Manasapujha_G_R_Resume.pdf"
+              rel="noopener"
+              style={{ textDecoration: "none", fontWeight: 600 }}
+              aria-label="Download resume PDF"
+            >
+              Download Resume
+            </a>
           </div>
         </div>
       </nav>
@@ -257,7 +267,15 @@ export default function PortfolioApp() {
             <p style={{ color: THEME.textMuted, fontSize: isMD ? 14 : 16, margin: 0 }}>Full-Stack Developer · Healthcare & Telecom · AWS</p>
             <div style={{ display: "flex", gap: 12, marginTop: 18, justifyContent: isMD ? "center" : "flex-start", flexWrap: "wrap" }}>
               <HeroButton href="#projects" label="View Projects" />
-              <HeroButton href="/Manasapujha_Resume.pdf" label="Download Resume" onClick={onResumeClick} />
+              <a
+                href={RESUME_URL}
+                download="Manasapujha_G_R_Resume.pdf"
+                rel="noopener"
+                style={{ textDecoration: "none", fontWeight: 600 }}
+                aria-label="Download resume PDF"
+              >
+                Download Resume
+              </a>
             </div>
           </div>
           <img src="/images/profile.jpg" alt="Manasapujha G. R." style={imgStyle} />
