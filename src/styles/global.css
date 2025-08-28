@@ -6,6 +6,7 @@ html, body {
 }
 html {
   color-scheme: light dark;
+  transition: background-color 0.3s ease, color 0.3s ease;
 }
 body {
   margin: 0;
@@ -14,6 +15,7 @@ body {
   color: var(--text);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  transition: background-color 0.3s ease, color 0.3s ease;
 }
 a { color: inherit; text-decoration: none; }
 a:hover { text-decoration: underline; text-underline-offset: 2px; }
@@ -44,22 +46,152 @@ a:focus-visible, button:focus-visible {
 .border { border: 1px solid var(--border); }
 .soft { background: var(--soft); }
 
-.btn { display: inline-block; padding: 10px 14px; border: 1px solid var(--border); border-radius: 10px; background: var(--soft); color: var(--text); transition: background .15s ease, transform .15s ease, box-shadow .15s ease; }
-.btn:hover { background: #fff; transform: translateY(-2px); box-shadow: 0 8px 16px rgba(2,6,23,.12); }
-[data-theme="dark"] .btn:hover { background: rgba(255,255,255,0.12); }
-.btn-primary { background: linear-gradient(135deg, var(--primary), var(--primary-2)); color: white; border: none; }
-.btn-primary:hover { filter: brightness(1.05); transform: translateY(-2px); box-shadow: 0 8px 18px rgba(124,58,237,.35); }
+.btn { 
+  display: inline-block; 
+  padding: 10px 14px; 
+  border: 1px solid var(--border); 
+  border-radius: 10px; 
+  background: var(--soft); 
+  color: var(--text); 
+  transition: background .15s ease, transform .15s ease, box-shadow .15s ease, color .15s ease; 
+}
+
+.btn:hover { 
+  background: #fff; 
+  color: #0b1220; 
+  transform: translateY(-2px); 
+  box-shadow: 0 8px 16px rgba(2,6,23,.12); 
+}
+
+.btn-primary { 
+  background: linear-gradient(135deg, var(--primary), var(--primary-2)); 
+  color: white; 
+  border: none; 
+}
+
+.btn-primary:hover { 
+  filter: brightness(1.05); 
+  transform: translateY(-2px); 
+  box-shadow: 0 8px 18px rgba(124,58,237,.35); 
+}
+
+/* Dark theme specific button improvements - higher specificity */
+[data-theme="dark"] .btn:hover {
+  background: rgba(255,255,255,0.25) !important;
+  color: #0b1220 !important;
+  border-color: rgba(255,255,255,0.4) !important;
+}
+
+/* Override any conflicting button styles in dark theme */
+[data-theme="dark"] .btn:hover,
+[data-theme="dark"] button.btn:hover {
+  background: rgba(255,255,255,0.25) !important;
+  color: #0b1220 !important;
+  border-color: rgba(255,255,255,0.4) !important;
+}
+
+[data-theme="dark"] .nav-link:hover,
+[data-theme="dark"] .nav-link[aria-current="true"] {
+  background: rgba(255,255,255,0.2) !important;
+  color: #e6e9f2 !important;
+}
+
+/* Force override for navigation links in dark theme */
+[data-theme="dark"] a:hover,
+[data-theme="dark"] .nav-link:hover,
+[data-theme="dark"] .nav-link[aria-current="true"] {
+  background: rgba(255,255,255,0.2) !important;
+  color: #e6e9f2 !important;
+}
+
+/* Theme toggle button specific styles */
+[data-theme="dark"] .btn[aria-label="Toggle color theme"] {
+  background: rgba(255,255,255,0.1) !important;
+  color: #e6e9f2 !important;
+  border-color: rgba(255,255,255,0.2) !important;
+}
+
+[data-theme="dark"] .btn[aria-label="Toggle color theme"]:hover {
+  background: rgba(255,255,255,0.25) !important;
+  color: #0b1220 !important;
+  border-color: rgba(255,255,255,0.4) !important;
+}
+
+/* Force override for all buttons in dark theme */
+[data-theme="dark"] button:hover,
+[data-theme="dark"] .btn:hover,
+[data-theme="dark"] button.btn:hover {
+  background: rgba(255,255,255,0.25) !important;
+  color: #0b1220 !important;
+  border-color: rgba(255,255,255,0.4) !important;
+}
 
 .badge { font-size: 13px; padding: 8px 12px; border-radius: 9999px; border: 1px solid var(--border); background: linear-gradient(180deg, rgba(124,58,237,.08), rgba(6,182,212,.08)); }
 
-.card { background: var(--card); border: 1px solid var(--border); border-radius: 16px; padding: 18px; box-shadow: var(--shadow); transition: transform .15s ease, box-shadow .15s ease, background .2s ease; }
+.card { background: var(--card); border: 1px solid var(--border); border-radius: 16px; padding: 18px; box-shadow: var(--shadow); transition: transform .15s ease, box-shadow .15s ease, background .2s ease, border-color 0.3s ease; }
 .card:hover { transform: translateY(-2px) scale(1.01); box-shadow: 0 14px 30px rgba(2,6,23,.12); }
+
+/* Certification cards */
+.certification-card {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 14px;
+  box-shadow: var(--shadow);
+  transition: transform .15s ease, box-shadow .15s ease, background .2s ease, border-color 0.3s ease;
+}
+
+.certification-card.hover {
+  transform: translateY(-2px);
+  box-shadow: 0 14px 30px rgba(2,6,23,.12);
+  background: var(--soft);
+}
+
+/* Dark theme certification card improvements */
+[data-theme="dark"] .certification-card {
+  background: var(--card);
+  border-color: var(--border);
+}
+
+[data-theme="dark"] .certification-card.hover {
+  background: rgba(255,255,255,0.1);
+  border-color: rgba(255,255,255,0.2);
+}
+
+/* Certification download button styling */
+.certification-download-btn {
+  color: var(--primary) !important;
+  background: rgba(124,58,237,0.1) !important;
+  border: 1px solid rgba(124,58,237,0.2) !important;
+  transition: all 0.2s ease !important;
+}
+
+.certification-download-btn:hover {
+  background: rgba(124,58,237,0.15) !important;
+  border-color: rgba(124,58,237,0.3) !important;
+  transform: translateY(-1px) !important;
+  box-shadow: 0 2px 8px rgba(124,58,237,0.2) !important;
+}
+
+/* Dark theme certification download button improvements */
+[data-theme="dark"] .certification-download-btn {
+  background: rgba(124,58,237,0.15) !important;
+  border-color: rgba(124,58,237,0.25) !important;
+}
+
+[data-theme="dark"] .certification-download-btn:hover {
+  background: rgba(124,58,237,0.25) !important;
+  border-color: rgba(124,58,237,0.4) !important;
+}
 
 .nav { position: sticky; top: 0; z-index: 40; }
 .nav-inner { display: flex; align-items: center; justify-content: space-between; gap: 8px; padding: 10px 20px; }
 .nav-links { display: flex; gap: 8px; flex-wrap: wrap; }
 .nav-link { padding: 8px 12px; border-radius: 9999px; transition: background .15s ease, transform .15s ease, box-shadow .15s ease; font-weight: 500; display: inline-block; }
-.nav-link[aria-current="true"], .nav-link:hover { background: var(--soft); box-shadow: 0 8px 16px rgba(2,6,23,.10); transform: translateY(-2px); }
+.nav-link[aria-current="true"], .nav-link:hover { background: var(--soft); color: var(--text); box-shadow: 0 8px 16px rgba(2,6,23,.10); transform: translateY(-2px); }
 
 .hero { padding: 60px 20px; position: relative; }
 .hero-bg { position: absolute; inset: 0; pointer-events: none; background: radial-gradient(1100px 500px at 10% -20%, rgba(124,58,237,.13), transparent 60%), radial-gradient(1100px 600px at 100% -40%, rgba(6,182,212,.13), transparent 60%); }
@@ -68,6 +200,44 @@ a:focus-visible, button:focus-visible {
 .hero-sub { color: var(--muted); font-size: 16px; margin: 0; }
 .hero-cta { display: flex; gap: 12px; margin-top: 18px; flex-wrap: wrap; }
 .hero-img { border-radius: 50%; object-fit: cover; box-shadow: 0 10px 24px rgba(2,6,23,.18); border: 1px solid var(--border); }
+
+/* Hero badge styling */
+.hero-badge {
+  display: inline-flex;
+  gap: 8px;
+  align-items: center;
+  padding: 6px 10px;
+  border-radius: 9999px;
+  background: linear-gradient(135deg, rgba(124,58,237,0.15), rgba(6,182,212,0.15));
+  border: 1px solid var(--border);
+  backdrop-filter: blur(8px);
+  transition: all 0.3s ease;
+}
+
+.hero-badge:hover {
+  background: linear-gradient(135deg, rgba(124,58,237,0.25), rgba(6,182,212,0.25));
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(124,58,237,0.2);
+}
+
+.hero-badge-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 9999px;
+  background: linear-gradient(135deg, #7c3aed, #06b6d4);
+  box-shadow: 0 0 8px rgba(124,58,237,0.4);
+}
+
+/* Dark theme hero badge improvements */
+[data-theme="dark"] .hero-badge {
+  background: linear-gradient(135deg, rgba(124,58,237,0.2), rgba(6,182,212,0.2));
+  border-color: rgba(255,255,255,0.2);
+}
+
+[data-theme="dark"] .hero-badge:hover {
+  background: linear-gradient(135deg, rgba(124,58,237,0.3), rgba(6,182,212,0.3));
+  border-color: rgba(255,255,255,0.3);
+}
 
 .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 16px; }
 .muted { color: var(--muted); }
