@@ -424,7 +424,7 @@ export default function PortfolioApp() {
 
   function Projects() {
     return (
-      <Section id="projects" title="Projects" subtitle="Selected work across healthcare IT and environment management">
+      <Section id="projects" title="Projects" subtitle="Selected work across healthcare IT and telecom IT">
         <div className="grid" style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(260px, 1fr))", gap: isMD ? 14 : 16 }}>
           {projects.map((p, i) => {
             const waLink = buildWhatsAppLink(p.title);
