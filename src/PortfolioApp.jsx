@@ -406,7 +406,7 @@ export default function PortfolioApp() {
     }
 
     return (
-      <Section id="certifications" title="Certifications" subtitle="Organized for quick scanning">
+      <Section id="certifications" title="Certifications">
         {grouped.map((g, gi) => (
           <div key={gi} style={{ marginTop: gi === 0 ? 0 : 8 }}>
             {gi > 0 && <div style={divider} />}
@@ -424,7 +424,7 @@ export default function PortfolioApp() {
 
   function Projects() {
     return (
-      <Section id="projects" title="Projects" subtitle="Selected work across healthcare IT and telecom IT">
+      <Section id="projects" title="Projects" subtitle="Selected work across Healthcare IT and Telecom IT">
         <div className="grid" style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(260px, 1fr))", gap: isMD ? 14 : 16 }}>
           {projects.map((p, i) => {
             const waLink = buildWhatsAppLink(p.title);
