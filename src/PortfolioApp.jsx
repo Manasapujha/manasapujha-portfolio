@@ -111,6 +111,33 @@ export default function PortfolioApp() {
       return () => obs.disconnect();
     }, []);
 
+    function ThemeToggle() {
+      const [theme, setTheme] = useState(null);
+      useEffect(() => {
+        const saved = localStorage.getItem("theme");
+        if (saved === "light" || saved === "dark") {
+          document.documentElement.dataset.theme = saved;
+          setTheme(saved);
+          return;
+        }
+        const prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+        const initial = prefersDark ? "dark" : "light";
+        document.documentElement.dataset.theme = initial;
+        setTheme(initial);
+      }, []);
+      function toggleTheme() {
+        const next = (document.documentElement.dataset.theme === "dark") ? "light" : "dark";
+        document.documentElement.dataset.theme = next;
+        localStorage.setItem("theme", next);
+        setTheme(next);
+      }
+      return (
+        <button onClick={toggleTheme} className="btn" aria-label="Toggle color theme" title="Toggle theme">
+          {theme === "dark" ? "Light" : "Dark"}
+        </button>
+      );
+    }
+
     function NavLink({ href, label, onClick, title }) {
       const [hover, setHover] = React.useState(false);
       const targetId = href && href.startsWith("#") ? href.slice(1) : null;
@@ -145,10 +172,10 @@ export default function PortfolioApp() {
     }
 
     return (
-      <nav style={{ position: "sticky", top: 0, zIndex: 40, backdropFilter: "saturate(180%) blur(8px)", background: "rgba(255,255,255,.85)", borderBottom: border("#e2e8f0") }}>
-        <div style={{ maxWidth: 1100, margin: "0 auto", padding: isSM ? "8px 12px" : "10px 20px", display: "flex", alignItems: "center", justifyContent: "space-between", gap: 8, flexWrap: isMD ? "wrap" : "nowrap" }}>
+      <nav className="glass border" style={{ position: "sticky", top: 0, zIndex: 40 }}>
+        <div className="container nav-inner" style={{ maxWidth: 1100, margin: "0 auto", padding: isSM ? "8px 12px" : "10px 20px", display: "flex", alignItems: "center", justifyContent: "space-between", gap: 8, flexWrap: isMD ? "wrap" : "nowrap" }}>
           <div />
-          <div style={{ display: "flex", gap: isSM ? 6 : 8, flexWrap: "wrap" }}>
+          <div className="nav-links" style={{ display: "flex", gap: isSM ? 6 : 8, flexWrap: "wrap" }}>
             <NavLink href="#skills" label="Skills" />
             <NavLink href="#projects" label="Projects" />
             <NavLink href="#certifications" label="Certifications" />
@@ -174,6 +201,7 @@ export default function PortfolioApp() {
             >
               Download Resume
             </a>
+            <ThemeToggle />
           </div>
         </div>
       </nav>
@@ -182,10 +210,11 @@ export default function PortfolioApp() {
 
   function Section({ id, title, subtitle, children }) {
     return (
-      <section id={id} style={{ marginTop: isMD ? 32 : 42 }}>
+      <section id={id} className="section" style={{ marginTop: isMD ? 32 : 42 }}>
         <div style={{ marginBottom: 16 }}>
-          <h2 style={{ fontSize: isMD ? 22 : 26, fontWeight: 800, margin: 0 }}>{title}</h2>
-          {subtitle && <p style={{ margin: "6px 0 0", color: THEME.textMuted, fontSize: isMD ? 14 : 16 }}>{subtitle}</p>}
+          <div className="overline">{title}</div>
+          <h2 className="h2" style={{ marginTop: 6 }}>{title}</h2>
+          {subtitle && <p className="muted" style={{ margin: "6px 0 0", fontSize: isMD ? 14 : 16 }}>{subtitle}</p>}
         </div>
         {children}
       </section>
@@ -207,8 +236,9 @@ export default function PortfolioApp() {
     }
 
     return (
-      <div style={{ maxWidth: isLG ? 1000 : 1100, margin: "0 auto", padding: isMD ? "36px 16px 20px" : "60px 20px" }}>
-        <div style={{ display: "grid", gap: isMD ? 18 : 24, alignItems: "center", gridTemplateColumns: isMD ? "1fr" : "1fr auto", textAlign: isMD ? "center" : "left" }}>
+      <div className="container hero" style={{ maxWidth: isLG ? 1000 : 1100, margin: "0 auto", padding: isMD ? "36px 16px 20px" : "60px 20px" }}>
+        <div className="hero-bg" />
+        <div className="hero-grid" style={{ gap: isMD ? 18 : 24, alignItems: "center", gridTemplateColumns: isMD ? "1fr" : "1fr auto", textAlign: isMD ? "center" : "left" }}>
           <div>
             <div style={{ display: "inline-flex", gap: 8, alignItems: "center", padding: "6px 10px", borderRadius: 9999, background: "#ffffffa6", border: border("#e2e8f0") }}>
               <span style={{ width: 8, height: 8, borderRadius: 9999, background: THEME.primary }} />
@@ -216,10 +246,10 @@ export default function PortfolioApp() {
                 Software Development Engineer Senior · CSG Systems International (India)
               </span>
             </div>
-            <h1 style={{ fontSize: isMD ? (isSM ? 28 : 32) : 40, lineHeight: 1.2, margin: "16px 0 8px" }}>Manasapujha G. R.</h1>
-            <p style={{ color: THEME.textMuted, fontSize: isMD ? 14 : 16, margin: 0 }}>Full-Stack Developer · Healthcare & Telecom · AWS</p>
-            <div style={{ display: "flex", gap: 12, marginTop: 18, justifyContent: isMD ? "center" : "flex-start", flexWrap: "wrap" }}>
-              <HeroButton href="#projects" label="View Projects" />
+            <h1 className="hero-title" style={{ fontSize: isMD ? (isSM ? 28 : 32) : 40 }}>Manasapujha G. R.</h1>
+            <p className="hero-sub" style={{ fontSize: isMD ? 14 : 16 }}>Full-Stack Developer · Healthcare & Telecom · AWS</p>
+            <div className="hero-cta" style={{ display: "flex", gap: 12, marginTop: 18, justifyContent: isMD ? "center" : "flex-start", flexWrap: "wrap" }}>
+              <a className="btn" href="#projects">View Projects</a>
               <HeroButton
                 href={RESUME_URL}
                 download="Manasapujha_G_R_Resume.pdf"
@@ -230,7 +260,7 @@ export default function PortfolioApp() {
               </HeroButton>
             </div>
           </div>
-          <img src="/images/profile.jpg" alt="Manasapujha G. R." style={imgStyle} />
+          <img src="/images/profile.jpg" alt="Manasapujha G. R." style={imgStyle} width={imgSize} height={imgSize} loading="eager" />
         </div>
       </div>
     );
@@ -241,7 +271,7 @@ export default function PortfolioApp() {
       <Section id="skills" title="Skills" subtitle="Languages, platforms & tooling I use to ship reliably">
         <div style={{ display: "flex", flexWrap: "wrap", gap: isSM ? 8 : 10 }}>
           {skills.map((s, i) => (
-            <span key={i} style={{ fontSize: isSM ? 12 : 13, padding: isSM ? "7px 10px" : "8px 12px", borderRadius: 9999, color: THEME.text, background: "#eef2ff", border: border("#e5e7eb") }}>{s}</span>
+            <span key={i} className="badge">{s}</span>
           ))}
         </div>
       </Section>
@@ -317,13 +347,13 @@ export default function PortfolioApp() {
   function Projects() {
     return (
       <Section id="projects" title="Projects" subtitle="Selected work across healthcare IT and environment management">
-        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(260px, 1fr))", gap: isMD ? 14 : 16 }}>
+        <div className="grid" style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(260px, 1fr))", gap: isMD ? 14 : 16 }}>
           {projects.map((p, i) => {
             const waLink = buildWhatsAppLink(p.title);
             return (
-              <article key={i} style={{ background: THEME.card, border: border(), borderRadius: 16, padding: isMD ? 16 : 18, boxShadow: shadow }}>
+              <article key={i} className="card" style={{ background: THEME.card, border: border(), borderRadius: 16, padding: isMD ? 16 : 18, boxShadow: shadow }}>
                 <h3 style={{ fontWeight: 800, fontSize: isMD ? 17 : 18, margin: 0 }}>{p.title}</h3>
-                <p style={{ color: THEME.textMuted, lineHeight: 1.6, margin: "8px 0 12px", fontSize: isMD ? 14 : 15 }}>{p.description}</p>
+                <p className="muted" style={{ lineHeight: 1.6, margin: "8px 0 12px", fontSize: isMD ? 14 : 15 }}>{p.description}</p>
                 <div>
                   <a
                     href={waLink}
