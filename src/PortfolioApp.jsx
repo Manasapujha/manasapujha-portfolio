@@ -73,78 +73,17 @@ export default function PortfolioApp() {
 
   const RESUME_URL = "/Manasapujha_Resume.pdf";
 
-  // ---------------- RESUME DOWNLOAD (robust + PDF verification) ----------------
-  const baseUrl = (typeof import.meta !== "undefined" && import.meta.env && import.meta.env.BASE_URL) || "/";
-  const RESUME_CANDIDATES = [
-    "/Manasapujha_Resume.pdf",
-    `${baseUrl}Manasapujha_Resume.pdf`,
-  ];
-
-  function addNoCache(url) {
-    const sep = url.includes("?") ? "&" : "?";
-    return `${url}${sep}v=${Date.now()}`;
-  }
-
-  function looksLikePdf(buf, contentType) {
-    const ct = (contentType || "").toLowerCase();
-    if (ct.includes("application/pdf")) return true;
-    // Check magic bytes: "%PDF" -> 0x25 0x50 0x44 0x46
-    const view = new Uint8Array(buf.slice(0, 4));
-    return view.length >= 4 && view[0] === 0x25 && view[1] === 0x50 && view[2] === 0x44 && view[3] === 0x46;
-  }
-
-  async function downloadResume() {
-    const filename = "Manasapujha_G_R_Resume.pdf";
-    const errors = [];
-    for (const base of RESUME_CANDIDATES) {
-      const url = addNoCache(base);
-      try {
-        const res = await fetch(url, { redirect: "follow" });
-        if (!res.ok) {
-          errors.push(`${url} -> HTTP ${res.status}`);
-          continue;
-        }
-        const buf = await res.arrayBuffer();
-        const ct = res.headers.get("content-type") || "";
-        if (!looksLikePdf(buf, ct) || buf.byteLength < 1024) { // <1KB is almost certainly wrong (HTML shell)
-          errors.push(`${url} -> not a PDF (ct=${ct}, size=${buf.byteLength})`);
-          continue;
-        }
-        const blob = new Blob([buf], { type: "application/pdf" });
-        const objectUrl = URL.createObjectURL(blob);
-        const a = document.createElement("a");
-        a.href = objectUrl;
-        a.download = filename;
-        document.body.appendChild(a);
-        a.click();
-        a.remove();
-        URL.revokeObjectURL(objectUrl);
-        return true;
-      } catch (e) {
-        errors.push(`${url} -> ${e?.message || e}`);
-      }
-    }
-    console.error("[resume] All attempts failed:", errors);
-    alert("Couldn't download the resume from the expected paths. See console for details.\n" + errors.join("\n"));
-    return false;
-  }
-
-  function handleResumeDownload(e) {
-    e.preventDefault();
-    downloadResume();
-  }
-
   // ---------------- LAYOUT ----------------
   function Shell({ children }) {
     return (
       <div style={{ background: THEME.pageBg, minHeight: "100vh" }}>
-        <Nav onResumeClick={handleResumeDownload} />
+        <Nav />
         <header style={{
           background: `radial-gradient(1100px 500px at 10% -20%, ${THEME.gradientA}22, transparent 60%),
                        radial-gradient(1100px 600px at 100% -40%, ${THEME.gradientB}22, transparent 60%)`,
           borderBottom: border("#e2e8f0"),
         }}>
-          <Hero onResumeClick={handleResumeDownload} />
+          <Hero />
         </header>
         <main style={{ maxWidth: isLG ? 1000 : 1100, margin: "0 auto", padding: isMD ? "24px 16px 56px" : "32px 20px 64px" }}>
           {children}
@@ -156,7 +95,7 @@ export default function PortfolioApp() {
     );
   }
 
-  function Nav({ onResumeClick }) {
+  function Nav() {
     const [activeId, setActiveId] = React.useState("");
     const [resumeHover, setResumeHover] = React.useState(false);
 
@@ -253,7 +192,7 @@ export default function PortfolioApp() {
     );
   }
 
-  function Hero({ onResumeClick }) {
+  function Hero() {
     const imgSize = isMD ? (isSM ? 110 : 140) : 180;
     const imgStyle = { width: imgSize, height: imgSize, borderRadius: "50%", objectFit: "cover", boxShadow: "0 10px 24px rgba(2,6,23,.18)", border: border("#e2e8f0"), margin: isMD ? "0 auto" : 0 };
 
