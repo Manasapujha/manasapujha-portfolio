@@ -305,14 +305,15 @@ export default function PortfolioApp() {
             <p className="hero-sub" style={{ fontSize: isMD ? 14 : 16 }}>Full-Stack Developer · Healthcare & Telecom · AWS</p>
             <div className="hero-cta" style={{ display: "flex", gap: 12, marginTop: 18, justifyContent: isMD ? "center" : "flex-start", flexWrap: "wrap" }}>
               <a className="btn" href="#projects">View Projects</a>
-              <HeroButton
+              <a 
+                className="btn" 
                 href={RESUME_URL}
                 download="Manasapujha_G_R_Resume.pdf"
                 rel="noopener"
                 aria-label="Download resume PDF"
               >
                 Download Resume
-              </HeroButton>
+              </a>
             </div>
           </div>
           <img src="/images/profile.jpg" alt="Manasapujha G. R." style={imgStyle} width={imgSize} height={imgSize} loading="eager" />
