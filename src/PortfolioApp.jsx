@@ -158,6 +158,7 @@ export default function PortfolioApp() {
 
   function Nav({ onResumeClick }) {
     const [activeId, setActiveId] = React.useState("");
+    const [resumeHover, setResumeHover] = React.useState(false);
 
     useEffect(() => {
       if (typeof window === "undefined" || !("IntersectionObserver" in window)) return;
@@ -216,8 +217,21 @@ export default function PortfolioApp() {
               href={RESUME_URL}
               download="Manasapujha_G_R_Resume.pdf"
               rel="noopener"
-              style={{ textDecoration: "none", fontWeight: 600 }}
               aria-label="Download resume PDF"
+              style={{
+                color: THEME.text,
+                textDecoration: "none",
+                padding: isSM ? "8px 10px" : "8px 12px",
+                borderRadius: 9999,
+                transition: "background .15s ease, transform .15s ease, box-shadow .15s ease",
+                background: resumeHover ? THEME.soft : "transparent",
+                transform: resumeHover && !isSM ? "translateY(-2px)" : "none",
+                boxShadow: resumeHover && !isSM ? "0 8px 16px rgba(2,6,23,.10)" : "none",
+                fontWeight: 500,
+                display: "inline-block",
+              }}
+              onMouseEnter={() => setResumeHover(true)}
+              onMouseLeave={() => setResumeHover(false)}
             >
               Download Resume
             </a>
@@ -243,12 +257,12 @@ export default function PortfolioApp() {
     const imgSize = isMD ? (isSM ? 110 : 140) : 180;
     const imgStyle = { width: imgSize, height: imgSize, borderRadius: "50%", objectFit: "cover", boxShadow: "0 10px 24px rgba(2,6,23,.18)", border: border("#e2e8f0"), margin: isMD ? "0 auto" : 0 };
 
-    function HeroButton({ href, label, onClick }) {
+    function HeroButton({ href, label, onClick, children, ...rest }) {
       const [hover, setHover] = React.useState(false);
-      const style = { background: hover ? "#ffffff" : THEME.soft, color: THEME.text, textDecoration: "none", padding: isSM ? "9px 12px" : "10px 14px", borderRadius: 10, border: border(), transition: "background .15s ease, transform .15s ease, box-shadow .15s ease", transform: hover && !isSM ? "translateY(-2px)" : "none", boxShadow: hover && !isSM ? "0 8px 16px rgba(2,6,23,.12)" : "none" };
+      const style = { background: hover ? "#ffffff" : THEME.soft, color: THEME.text, textDecoration: "none", padding: isSM ? "9px 12px" : "10px 14px", borderRadius: 10, border: border(), transition: "background .15s ease, transform .15s ease, box-shadow .15s ease", transform: hover && !isSM ? "translateY(-2px)" : "none", boxShadow: hover && !isSM ? "0 8px 16px rgba(2,6,23,.12)" : "none", fontWeight: 600, display: "inline-block" };
       return (
-        <a href={href} style={style} onMouseEnter={() => setHover(true)} onMouseLeave={() => setHover(false)} onClick={onClick}>
-          {label}
+        <a href={href} style={style} onMouseEnter={() => setHover(true)} onMouseLeave={() => setHover(false)} onClick={onClick} {...rest}>
+          {children || label}
         </a>
       );
     }
@@ -267,15 +281,14 @@ export default function PortfolioApp() {
             <p style={{ color: THEME.textMuted, fontSize: isMD ? 14 : 16, margin: 0 }}>Full-Stack Developer · Healthcare & Telecom · AWS</p>
             <div style={{ display: "flex", gap: 12, marginTop: 18, justifyContent: isMD ? "center" : "flex-start", flexWrap: "wrap" }}>
               <HeroButton href="#projects" label="View Projects" />
-              <a
+              <HeroButton
                 href={RESUME_URL}
                 download="Manasapujha_G_R_Resume.pdf"
                 rel="noopener"
-                style={{ textDecoration: "none", fontWeight: 600 }}
                 aria-label="Download resume PDF"
               >
                 Download Resume
-              </a>
+              </HeroButton>
             </div>
           </div>
           <img src="/images/profile.jpg" alt="Manasapujha G. R." style={imgStyle} />
